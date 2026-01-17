@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Mi Cuenta - Tienda La Caserita</title>
+    <link rel="stylesheet" href="Estilos/style_micuenta.css">
+    <style>
+        /* Estilos inline para asegurar consistencia inmediata */
+        .btn-back {
+            text-decoration: none;
+            color: white;
+            font-size: 24px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modales custom */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Botón back centrado verticalmente */
+        .header-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .btn-back {
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            width: 40px;
+            padding-bottom: 4px;
+            /* ajuste visual */
+        }
+
+        /* Ajustes para modales */
+        .btn-delete-confirm {
+            background: #d32f2f;
+            color: white;
+            width: 48%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-cancel-confirm {
+            background: #eee;
+            color: #333;
+            width: 48%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .custom-modal {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .modal-form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn-save-modal {
+            width: 100%;
+            padding: 12px;
+            background: #2d2d2d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-save-modal:hover {
+            background: #1a1a1a;
+        }
+
+        .btn-cancel-modal {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Estilo para el formulario de perfil disabled */
+        .info-form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+        }
+
+        .info-header {
+            color: #1a7a8a;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .input-disabled {
+            background: #f9f9f9;
+            border-color: transparent !important;
+            color: #555;
+            cursor: default;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="account-header">
+        <div class="header-content">
+            <!-- Botón de retorno simplificado y centrado -->
+            <a href="home.html" class="btn-back" title="Volver a la tienda">←</a>
+            <h1 class="header-title" style="flex-grow: 1;">Mi Cuenta</h1>
+            <button class="btn-logout-header" id="btnLogoutHeader">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="account-container">
+        <!-- PERFIL HEADER -->
+        <section class="profile-card">
+            <div class="profile-avatar">
+                <div class="avatar-circle">👤</div>
+            </div>
+            <div class="profile-info">
+                <h2 id="profileName">Cargando...</h2>
+                <p id="profileEmail">...</p>
+            </div>
+        </section>
+
+        <div class="content-wrapper">
+            <!-- SIDEBAR -->
+            <aside class="account-sidebar">
+                <nav class="sidebar-nav">
+                    <button class="nav-item active" data-section="pedidos">Mis Pedidos</button>
+                    <button class="nav-item" data-section="direcciones">Direcciones</button>
+                    <button class="nav-item" data-section="info">Mi Información</button>
+                </nav>
+            </aside>
+
+            <!-- SECCION PEDIDOS -->
+            <section class="account-section active" id="section-pedidos">
+                <div class="section-header">
+                    <h2>Historial de Compras</h2>
+                </div>
+                <div class="orders-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pedido #</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersList">
+                            <!-- JS llenará esto -->
+                        </tbody>
+                    </table>
+                    <div id="noOrdersMessage" style="padding: 20px; text-align: center; color: #666; display: none;">
+                        No has realizado pedidos aún.
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCION DIRECCIONES -->
+            <section class="account-section" id="section-direcciones">
+                <div class="section-header">
+                    <h2>Direcciones Guardadas</h2>
+                </div>
+                <div class="addresses-grid" id="addressList">
+                    <!-- JS llenará esto -->
+                </div>
+                <button class="btn-add-address" onclick="openAddModal()">+ Agregar Nueva Dirección</button>
+            </section>
+
+            <!-- SECCION INFO PERSONAL -->
+            <section class="account-section" id="section-info">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Información Personal</h2>
+                    <button id="btnToggleEdit" class="btn-save-modal"
+                        style="width: auto; padding: 8px 15px; background: #1a7a8a; font-size: 0.9em;">✏️
+                        Editar</button>
+                </div>
+
+                <div style="display: flex; justify-content: center; align-items: flex-start; margin-top: 20px;">
+                    <form id="updateProfileForm" class="info-form-card" style="width: 100%;">
+                        <div class="modal-form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" id="editName" required disabled class="input-disabled">
+                        </div>
+                        <div class="modal-form-group">
+                            <label>Correo Electrónico</label>
+                            <input type="email" id="editEmail" required disabled class="input-disabled">
+                        </div>
+
+                        <div id="securitySection" style="display: none;">
+                            <h3 class="info-header" style="margin-top: 25px;">Seguridad</h3>
+                            <div class="modal-form-group">
+                                <label>Contraseña Actual (Requerida solo para guardar cambios)</label>
+                                <input type="password" id="currentPassword" placeholder="Tu contraseña actual">
+                            </div>
+                            <div class="modal-form-group">
+                                <label>Nueva Contraseña (Opcional)</label>
+                                <input type="password" id="newPassword" placeholder="Nueva contraseña">
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div id="editActions" style="display: none; margin-top: 20px; text-align: right;">
+                            <button type="button" class="btn-cancel-modal" id="btnCancelEdit"
+                                style="margin-right: 10px;">Cancelar</button>
+                            <button type="submit" class="btn-save-modal" style="width: auto;">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- MODAL AGREGAR DIRECCIÓN -->
+    <div class="modal-overlay" id="addAddressModal">
+        <div class="custom-modal">
+            <h3 style="margin-bottom: 20px; text-align: center;" id="modalTitle">Nueva Dirección</h3>
+            <form id="addAddressForm">
+                <div class="modal-form-group">
+                    <label>Título (Ej. Casa, Oficina)</label>
+                    <input type="text" id="addrTitle" required placeholder="Ej: Casa de Playa">
+                </div>
+                <div class="modal-form-group">
+                    <label>Ciudad</label>
+                    <input type="text" id="addrCity" required placeholder="Ej: Lima">
+                </div>
+                <div class="modal-form-group">
+                    <label>Dirección / Calle</label>
+                    <input type="text" id="addrStreet" required placeholder="Av. Principal 123">
+                </div>
+                <div class="modal-form-group">
+                    <label>Referencia (Opcional)</label>
+                    <input type="text" id="addrRef" placeholder="Frente al parque...">
+                </div>
+                <button type="submit" class="btn-save-modal">Guardar Dirección</button>
+                <button type="button" class="btn-cancel-modal" onclick="closeModals()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMACION ELIMINAR (NUEVO) -->
+    <div class="modal-overlay" id="deleteConfirmModal" style="z-index: 2001;">
+        <div class="custom-modal" style="text-align: center; max-width: 350px;">
+            <div style="font-size: 40px; margin-bottom: 10px;">🗑️</div>
+            <h3>¿Eliminar dirección?</h3>
+            <p style="color: #666; margin-bottom: 25px;">Esta acción no se puede deshacer.</p>
+            <div style="display: flex; justify-content: space-between;">
+                <button class="btn-cancel-confirm" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="btn-delete-confirm" id="btnConfirmDelete">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ALERTAS CUSTOM -->
+    <div class="modal-overlay" id="alertModal" style="z-index: 2002;">
+        <div class="custom-modal" style="text-align: center;">
+            <div id="alertIcon" style="font-size: 40px; margin-bottom: 10px;">⚠️</div>
+            <h3 id="alertTitle">Mensaje</h3>
+            <p id="alertMessage" style="color: #666; margin-bottom: 20px;"></p>
+            <button class="btn-save-modal" onclick="closeAlert()">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://tienda-caserita-api.onrender.com/api/auth';
+        let token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        let originalUserData = {}; // Backup para cancelar edición
+
+        if (!token) window.location.href = 'index.html';
+
+        // Variables para eliminación
+        let addressToDeleteId = null;
+
+        $(document).ready(function () {
+            loadUserData();
+            loadOrders();
+
+            // Navegación
+            $('.nav-item').click(function () {
+                $('.nav-item').removeClass('active');
+                $(this).addClass('active');
+                $('.account-section').removeClass('active');
+                $('#section-' + $(this).data('section')).addClass('active');
+            });
+
+            $('#btnLogoutHeader').click(function () {
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            });
+
+            // --- LÓGICA DE EDICIÓN DE PERFIL ---
+            $('#btnToggleEdit').click(function () {
+                $(this).hide();
+                $('#editActions, #securitySection').slideDown();
+                $('#editName, #editEmail').prop('disabled', false).removeClass('input-disabled');
+            });
+
+            $('#btnCancelEdit').click(function () {
+                // Restaurar datos
+                $('#editName').val(originalUserData.nombre);
+                $('#editEmail').val(originalUserData.email);
+                $('#currentPassword, #newPassword').val('');
+
+                // UI Restaurar
+                $('#editActions, #securitySection').slideUp();
+                $('#editName, #editEmail').prop('disabled', true).addClass('input-disabled');
+                $('#btnToggleEdit').show();
+            });
+
+            // --- FORMULARIOS ---
+
+            // 1. Guardar Dirección (Ahora maneja tanto add como edit)
+            $('#addAddressForm').off('submit').on('submit', async function (e) {
+                e.preventDefault();
+                const btn = $(this).find('button[type="submit"]');
+                const originalText = btn.text();
+                btn.text('Guardando...').prop('disabled', true);
+
+                const data = {
+                    titulo: $('#addrTitle').val(),
+                    ciudad: $('#addrCity').val(),
+                    calle: $('#addrStreet').val(),
+                    referencia: $('#addrRef').val()
+                };
+
+                try {
+                    let url = `${API_URL}/address`;
+                    let method = 'POST';
+
+                    if (currentEditId) {
+                        url = `${API_URL}/address/${currentEditId}`;
+                        method = 'PUT';
+                    }
+
+                    const res = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await res.json();
+
+                    if (res.ok) {
+                        closeModals();
+                        loadUserData();
+                        showAlert('¡Éxito!', currentEditId ? 'Dirección actualizada' : 'Dirección guardada', 'success');
+                    } else {
+                        showAlert('Error', result.error || 'No se pudo guardar', 'error');
+                    }
+                } catch (err) {
+                    console.error("Fetch error:", err);
+                    showAlert('Error', 'Error de conexión con el servidor.', 'error');
+                } finally {
+                    btn.text(originalText).prop('disabled', false);
+                }
+            });
+
+            // 2. Actualizar Perfil
+            $('#updateProfileForm').on('submit', async function (e) {
+                e.preventDefault();
+                handleProfileUpdate(e);
+            });
+
+            // 3. Confirmación de Eliminación
+            $('#btnConfirmDelete').click(async function () {
+                if (!addressToDeleteId) return;
+
+                // UI Loading
+                $(this).text("Eliminando...");
+
+                try {
+                    const res = await fetch(`${API_URL}/address/${addressToDeleteId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        loadUserData();
+                        closeDeleteModal();
+                        showAlert('Eliminado', 'La dirección ha sido eliminada.', 'success');
+                    } else {
+                        showAlert('Error', 'No se pudo eliminar', 'error');
+                        closeDeleteModal();
+                    }
+                } catch (e) {
+                    console.error(e);
+                    showAlert('Error', 'Error de conexión al eliminar.', 'error');
+                    closeDeleteModal();
+                } finally {
+                    $('#btnConfirmDelete').text("Eliminar");
+                }
+            });
+        });
+
+        // --- FUNCIONES AUXILIARES ---
+        async function handleProfileUpdate(e) {
+            const btn = $('#updateProfileForm').find('button[type="submit]');
+            const originalText = btn.text();
+            btn.text('Guardando...').prop('disabled', true);
+
+            const payload = {
+                nombre: $('#editName').val(),
+                email: $('#editEmail').val()
+            };
+
+            const currentPass = $('#currentPassword').val();
+            const newPass = $('#newPassword').val();
+
+            if (currentPass || newPass) {
+                if (!currentPass) {
+                    showAlert('Atención', 'Debes ingresar tu contraseña actual para confirmar los cambios.', 'warning');
+                    btn.text(originalText).prop('disabled', false);
+                    return;
+                }
+                payload.currentPassword = currentPass;
+                payload.newPassword = newPass;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/update-profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    if (data.token) {
+                        token = data.token;
+                        if (localStorage.getItem('token')) localStorage.setItem('token', token);
+                        else sessionStorage.setItem('token', token);
+                    }
+                    loadUserData();
+
+                    // Reset UI to view mode
+                    $('#btnCancelEdit').click();
+                    showAlert('¡Actualizado!', 'Tu perfil ha sido actualizado.', 'success');
+                } else {
+                    showAlert('Error', data.error || 'No se pudo actualizar', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showAlert('Error', 'Error de conexión', 'error');
+            } finally {
+                btn.text(originalText).prop('disabled', false);
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const res = await fetch(`${API_URL}/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const user = await res.json();
+
+                originalUserData = user; // Guardar backup
+
+                // Header
+                $('#profileName').text(user.nombre);
+                $('#profileEmail').text(user.email);
+
+                // Form Info
+                $('#editName').val(user.nombre);
+                $('#editEmail').val(user.email);
+
+                renderAddresses(user.direcciones || []);
+            } catch (error) {
+                console.error("Error loading user:", error);
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const res = await fetch(`${API_URL}/orders`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const orders = await res.json();
+                const $list = $('#ordersList');
+                $list.empty();
+
+                if (!orders || orders.length === 0) {
+                    $('#noOrdersMessage').show();
+                } else {
+                    $('#noOrdersMessage').hide();
+                    orders.forEach(order => {
+                        $list.append(`
+                            <tr>
+                                <td>${order._id.substring(0, 8)}...</td>
+                                <td>${new Date(order.fecha).toLocaleDateString()}</td>
+                                <td>S/ ${order.total}</td>
+                                <td><span class="badge badge-success">${order.estado}</span></td>
+                            </tr>
+                        `);
+                    });
+                }
+            } catch (error) { console.error(error); }
+        }
+
+        function renderAddresses(direcciones) {
+            const $grid = $('#addressList');
+            $grid.empty();
+
+            direcciones.forEach(addr => {
+                // Escapar comillas para evitar errores en onclick
+                const tituloSafe = addr.titulo.replace(/'/g, "&apos;");
+                const ciudadSafe = addr.ciudad.replace(/'/g, "&apos;");
+                const calleSafe = addr.calle.replace(/'/g, "&apos;");
+                const refSafe = (addr.referencia || "").replace(/'/g, "&apos;");
+
+                $grid.append(`
+                    <div class="address-card">
+                        <div class="address-header">
+                            <h3>${addr.titulo}</h3>
+                            <div class="address-actions">
+                                <button class="btn-edit-addr" style="background:none; border:none; cursor:pointer; font-size:1.2em; margin-right:5px;" 
+                                    onclick="openEditModal('${addr._id}', '${tituloSafe}', '${ciudadSafe}', '${calleSafe}', '${refSafe}')" 
+                                    title="Editar">✏️</button>
+                                <button class="btn-delete" onclick="askDelete('${addr._id}')" title="Eliminar">🗑️</button>
+                            </div>
+                        </div>
+                        <p><strong>${addr.calle}</strong></p>
+                        <p>${addr.ciudad}</p>
+                        ${addr.referencia ? '<p style="font-size:0.9em; color:#888; margin-top:5px;"><em>Ref: ' + addr.referencia + '</em></p>' : ''}
+                    </div>
+                `);
+            });
+        }
+
+        // Nueva función para abrir modal de borrado
+        function askDelete(id) {
+            addressToDeleteId = id;
+            $('#deleteConfirmModal').addClass('active');
+        }
+        function closeDeleteModal() {
+            $('#deleteConfirmModal').removeClass('active');
+            addressToDeleteId = null;
+        }
+
+        // --- MODALES & HELPERS ---
+        let currentEditId = null; // Para saber si estamos editando o creando
+
+        function openAddModal() {
+            currentEditId = null;
+            $('#modalTitle').text("Nueva Dirección");
+            $('#addAddressForm')[0].reset();
+            $('#addAddressModal').addClass('active');
+        }
+
+        function openEditModal(id, titulo, ciudad, calle, ref) {
+            currentEditId = id;
+            $('#modalTitle').text("Editar Dirección");
+            $('#addrTitle').val(titulo);
+            $('#addrCity').val(ciudad);
+            $('#addrStreet').val(calle);
+            $('#addrRef').val(ref);
+            $('#addAddressModal').addClass('active');
+        }
+
+        function closeModals() {
+            $('.modal-overlay').removeClass('active');
+            $('#addAddressForm')[0].reset(); // Reset only the add/edit form
+            currentEditId = null;
+        }
+
+        function showAlert(title, msg, type) {
+            $('#alertTitle').text(title);
+            $('#alertMessage').text(msg);
+            $('#alertIcon').text(type === 'success' ? '✅' : (type === 'warning' ? '⚠️' : '❌'));
+            $('#alertModal').addClass('active');
+        }
+        function closeAlert() { $('#alertModal').removeClass('active'); }
+    </script>
+</body>
+
+</html>

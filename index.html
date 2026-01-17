@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>Tienda "La Caserita"</title>
+</head>
+
+<link rel="stylesheet" href="Estilos/styles-login.css">
+
+<body>
+    <script>
+        // Si ya hay una sesión activa, ir directo al home (Revisa incluso si viene de 'Atrás')
+        window.onpageshow = function (event) {
+            const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+            if (userRole) {
+                window.location.replace('home.html');
+            }
+        };
+    </script>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">
+                <img src="Imagenes/logo.png" alt="logo-tienda">
+            </div>
+            <h1 class="brand-title">Tienda "La Caserita"</h1>
+            <p class="brand-subtitle">Tu tienda de confianza, ahora en línea. Productos frescos para tu hogar.</p>
+        </div>
+
+        <div class="right-panel">
+            <div class="login-card">
+                <h2 class="titulo">¡BIENVENIDO DE NUEVO!</h2>
+                <p class="subtitulo">Ingrese sus datos para continuar</p>
+
+                <!-- Formulario de LOGIN -->
+                <div id="loginSection">
+                    <form id="loginForm">
+                        <div class="grupo">
+                            <label class="label">Correo Electrónico</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">✉</span>
+                                <input type="email" id="email" placeholder="tu@email.com">
+                            </div>
+                            <span class="error-message" id="email-error"></span>
+                        </div>
+
+                        <div class="grupo">
+                            <label class="label">Contraseña</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="password" placeholder="Ingrese su contraseña">
+                                <button type="button" class="password-toggle"
+                                    onclick="togglePass('password')">👁</button>
+                            </div>
+                            <span class="error-message" id="password-error"></span>
+                        </div>
+
+                        <div class="remember-forgot">
+                            <label class="remember-me">
+                                <input type="checkbox" id="rememberMe"> <span>Recordarme</span>
+                            </label>
+                            <a href="#" onclick="showForgot()" class="forgot-password">¿Olvidaste contraseña?</a>
+                        </div>
+
+                        <button type="submit" class="login-button">INICIAR SESIÓN</button>
+                    </form>
+
+                    <div class="divider"><span>O continúa con</span></div>
+
+                    <div style="display: flex; justify-content: center; margin-top: 15px;">
+                        <div id="g_id_onload"
+                            data-client_id="589528567916-hvlebsdnr1goao5d8dscg2kjk8u41qt8.apps.googleusercontent.com"
+                            data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
+                        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"
+                            data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; text-align: center;">
+                        <p>¿No tienes cuenta? <a href="#" onclick="showRegister()"
+                                style="color: #059669; font-weight: bold;">Regístrate aquí</a></p>
+                    </div>
+                </div>
+
+                <!-- Formulario de REGISTRO (Oculto) -->
+                <div id="registerSection" style="display: none;">
+                    <h2 class="titulo">CREAR CUENTA</h2>
+                    <p class="subtitulo">Únete a La Caserita hoy mismo</p>
+
+                    <form id="registerForm">
+                        <div class="grupo">
+                            <label class="label">Nombre Completo</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" id="regNombre" placeholder="Tu Nombre" required>
+                            </div>
+                        </div>
+
+                        <div class="grupo">
+                            <label class="label">Correo Electrónico</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">✉</span>
+                                <input type="email" id="regEmail" placeholder="tu@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="grupo">
+                            <label class="label">Contraseña</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="regPassword" placeholder="Crea una contraseña" required>
+                                <button type="button" class="password-toggle"
+                                    onclick="togglePass('regPassword')">👁</button>
+                            </div>
+                        </div>
+
+                        <div class="grupo">
+                            <label class="label">Confirmar Contraseña</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="regConfirmPassword" placeholder="Repite la contraseña"
+                                    required>
+                                <button type="button" class="password-toggle"
+                                    onclick="togglePass('regConfirmPassword')">👁</button>
+                            </div>
+                            <span class="error-message" id="match-error" style="color:red; font-size:12px;"></span>
+                        </div>
+
+                        <button type="submit" class="login-button">REGISTRARSE</button>
+                    </form>
+
+                    <div style="margin-top: 20px; text-align: center;">
+                        <p>¿Ya tienes cuenta? <a href="#" onclick="showLogin()"
+                                style="color: #0d5f6e; font-weight: bold;">Inicia Sesión</a></p>
+                    </div>
+                </div>
+
+                <!-- Formulario de VERIFICACIÓN (Oculto) -->
+                <div id="verificationSection" style="display: none; text-align: center;">
+                    <h2 class="titulo">VERIFICAR CUENTA</h2>
+                    <p class="subtitulo">Ingresa el código que enviamos a tu correo</p>
+                    <div style="margin-bottom: 20px;">
+                        <span style="font-size: 40px;">📩</span>
+                    </div>
+
+                    <form id="verifyForm">
+                        <div class="grupo">
+                            <label class="label" style="text-align: center;">Código de 6 dígitos</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="verifyCode" placeholder="000000" maxlength="6"
+                                    style="text-align: center; letter-spacing: 5px; font-size: 20px;" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="login-button">VERIFICAR Y ENTRAR</button>
+                    </form>
+                    <div style="margin-top: 20px;">
+                        <a href="#" onclick="showLogin()" style="color: #666;">Volver al inicio</a>
+                    </div>
+                </div>
+
+                <!-- Formulario OLVIDÉ PASSWORD - PASO 1 (Email) -->
+                <div id="forgotSection" style="display: none; text-align: center;">
+                    <h2 class="titulo">RECUPERAR CUENTA</h2>
+                    <p class="subtitulo">Ingresa tu correo para recibir un código</p>
+
+                    <form id="forgotForm">
+                        <div class="grupo">
+                            <label class="label">Correo Electrónico</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">✉</span>
+                                <input type="email" id="forgotEmail" placeholder="tu@email.com" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="login-button">ENVIAR CÓDIGO</button>
+                    </form>
+                    <div style="margin-top: 20px;">
+                        <a href="#" onclick="showLogin()" style="color: #666;">Cancelar</a>
+                    </div>
+                </div>
+
+                <!-- Formulario OLVIDÉ PASSWORD - PASO 2 (Validar Código) -->
+                <div id="codeValidSection" style="display: none;">
+                    <h2 class="titulo">CÓDIGO DE SEGURIDAD</h2>
+                    <p class="subtitulo">Ingresa el código enviado a tu correo</p>
+
+                    <form id="codeForm">
+                        <div class="grupo">
+                            <label class="label">Código de 6 dígitos</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="validCode" placeholder="000000" maxlength="6"
+                                    style="text-align: center; letter-spacing: 5px; font-size: 20px;" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="login-button">VERIFICAR CÓDIGO</button>
+                    </form>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <a href="#" onclick="showForgot()" style="color: #666;">Reenviar correo</a>
+                    </div>
+                </div>
+
+                <!-- Formulario OLVIDÉ PASSWORD - PASO 3 (Nueva Password) -->
+                <div id="newPassSection" style="display: none;">
+                    <h2 class="titulo">NUEVA CONTRASEÑA</h2>
+                    <p class="subtitulo">Crea una nueva contraseña segura</p>
+
+                    <form id="finalResetForm">
+                        <div class="grupo">
+                            <label class="label">Nueva Contraseña</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="newPassword" placeholder="Nueva contraseña" required>
+                                <button type="button" class="password-toggle"
+                                    onclick="togglePass('newPassword')">👁</button>
+                            </div>
+                        </div>
+
+                        <div class="grupo">
+                            <label class="label">Confirmar Nueva Contraseña</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="confirmNewPassword" placeholder="Repite password" required>
+                                <button type="button" class="password-toggle"
+                                    onclick="togglePass('confirmNewPassword')">👁</button>
+                            </div>
+                            <span class="error-message" id="reset-match-error"
+                                style="color:red; font-size:12px;"></span>
+                        </div>
+
+                        <button type="submit" class="login-button">CAMBIAR CONTRASEÑA</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal Structure -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="custom-modal">
+            <span class="modal-icon" id="modalIcon">⚠️</span>
+            <h3 class="modal-title" id="modalTitle">Mensaje</h3>
+            <p class="modal-message" id="modalMessage">Descripción del mensaje</p>
+            <button class="modal-btn" id="modalBtn" onclick="closeModal()">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://tienda-caserita-api.onrender.com/api/auth';
+        let registeredEmail = ''; // Para verificación registro
+        let recoveryEmail = '';   // Para recuperación pass
+        let recoveryCode = '';    // Código validado
+
+        // --- MANEJO DE VISTAS ---
+        function hideAll() {
+            $('#loginSection, #registerSection, #verificationSection, #forgotSection, #codeValidSection, #newPassSection').hide();
+        }
+
+        function showLogin() { hideAll(); $('#loginSection').fadeIn(); }
+        function showRegister() { hideAll(); $('#registerSection').fadeIn(); }
+        function showForgot() { hideAll(); $('#forgotSection').fadeIn(); }
+
+        function showVerification(email) {
+            registeredEmail = email;
+            hideAll();
+            $('#verificationSection').fadeIn();
+        }
+
+        function showCodeValid(email) {
+            recoveryEmail = email;
+            hideAll();
+            $('#codeValidSection').fadeIn();
+        }
+
+        function showNewPass() {
+            hideAll();
+            $('#newPassSection').fadeIn();
+        }
+
+        function togglePass(id) {
+            const $input = $('#' + id);
+            $input.attr('type', $input.attr('type') === 'password' ? 'text' : 'password');
+        }
+
+        // --- ALERTAS ---
+        function showAlert(icon, title, message, type = 'normal') {
+            $('#modalIcon').text(icon);
+            $('#modalTitle').text(title);
+            $('#modalMessage').text(message);
+            const $btn = $('#modalBtn');
+            $btn.removeClass('error success');
+            if (type === 'error') $btn.addClass('error');
+            if (type === 'success') $btn.addClass('success');
+            $('#modalOverlay').addClass('active');
+        }
+        function closeModal() { $('#modalOverlay').removeClass('active'); }
+
+        // --- LOGICA ---
+        $(document).ready(function () {
+            const savedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (savedToken) { /* Auto-login check opcional */ }
+
+            // Validaciones Visuales
+            $('#regPassword, #regConfirmPassword').on('keyup', checkMatchRegister);
+            $('#newPassword, #confirmNewPassword').on('keyup', checkMatchReset);
+
+            function checkMatchRegister() {
+                const p1 = $('#regPassword').val();
+                const p2 = $('#regConfirmPassword').val();
+                if (p1 && p2) {
+                    if (p1 === p2) {
+                        $('#regConfirmPassword').addClass('success').removeClass('error');
+                        $('#match-error').text('');
+                    } else {
+                        $('#regConfirmPassword').addClass('error').removeClass('success');
+                        $('#match-error').text('No coinciden');
+                    }
+                }
+            }
+
+            function checkMatchReset() {
+                const p1 = $('#newPassword').val();
+                const p2 = $('#confirmNewPassword').val();
+                if (p1 && p2) {
+                    if (p1 === p2) {
+                        $('#confirmNewPassword').addClass('success').removeClass('error');
+                        $('#reset-match-error').text('');
+                    } else {
+                        $('#confirmNewPassword').addClass('error').removeClass('success');
+                        $('#reset-match-error').text('No coinciden');
+                    }
+                }
+            }
+
+            // LOGIN
+            $('#loginForm').on('submit', async function (e) {
+                e.preventDefault();
+                const email = $('#email').val().trim();
+                const password = $('#password').val().trim();
+                const remember = $('#rememberMe').is(':checked');
+
+                try {
+                    const res = await fetch(`${API_URL}/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        processLogin(data, remember);
+                    } else {
+                        if (data.error === "Usuario no encontrado") {
+                            showAlert('👤', 'No existe', 'Registrate primero.', 'normal');
+                            showRegister();
+                            $('#regEmail').val(email);
+                        } else if (data.error.includes("no verificada")) {
+                            showVerification(email);
+                            showAlert('📩', 'Verifica tu cuenta', 'Ingresa el código que te enviamos.');
+                        } else {
+                            showAlert('⚠️', 'Error', data.error, 'error');
+                        }
+                    }
+                } catch (err) { showAlert('🔌', 'Error', 'Fallo de conexión'); }
+            });
+
+            // REGISTER
+            $('#registerForm').on('submit', async function (e) {
+                e.preventDefault();
+                const nombre = $('#regNombre').val().trim();
+                const email = $('#regEmail').val().trim();
+                const password = $('#regPassword').val().trim();
+
+                try {
+                    const res = await fetch(`${API_URL}/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nombre, email, password })
+                    });
+                    const d = await res.json();
+                    if (res.ok) {
+                        showAlert('📧', 'Código Enviado', 'Revisa tu correo.');
+                        showVerification(email);
+                    } else {
+                        showAlert('⚠️', 'Error', d.error, 'error');
+                    }
+                } catch (e) { showAlert('🔌', 'Error', 'Error de red'); }
+            });
+
+            // VERIFY REGISTRO
+            $('#verifyForm').on('submit', async function (e) {
+                e.preventDefault();
+                const codigo = $('#verifyCode').val().trim();
+                try {
+                    const res = await fetch(`${API_URL}/verify`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: registeredEmail, codigo })
+                    });
+                    const d = await res.json();
+                    if (res.ok) {
+                        showAlert('Éxito', 'Cuenta verificada.', 'success');
+                        setTimeout(() => processLogin(d, true), 1500);
+                    } else showAlert('❌', 'Error', d.error, 'error');
+                } catch (e) { showAlert('🔌', 'Error', 'Error de red'); }
+            });
+
+            // PASSWORD RECOVERY STEP 1: SEND CODE
+            $('#forgotForm').on('submit', async function (e) {
+                e.preventDefault();
+                const email = $('#forgotEmail').val().trim();
+                try {
+                    const res = await fetch(`${API_URL}/forgot-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const d = await res.json();
+                    if (res.ok) {
+                        showAlert('📧', 'Código Enviado', 'Revisa tu correo.', 'success');
+                        showCodeValid(email);
+                    } else showAlert('⚠️', 'Error', d.error, 'error');
+                } catch (e) { showAlert('🔌', 'Error', 'Error de red'); }
+            });
+
+            // PASSWORD RECOVERY STEP 2: VERIFY CODE
+            $('#codeForm').on('submit', async function (e) {
+                e.preventDefault();
+                const codigo = $('#validCode').val().trim();
+                try {
+                    const res = await fetch(`${API_URL}/verify-code`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: recoveryEmail, codigo })
+                    });
+                    const d = await res.json();
+                    if (res.ok) {
+                        recoveryCode = codigo; // Guardar código para paso final
+                        showAlert('✅', 'Código Correcto', 'Ahora crea tu nueva contraseña.', 'success');
+                        showNewPass();
+                    } else showAlert('❌', 'Error', d.error, 'error');
+                } catch (e) { showAlert('🔌', 'Error', 'Error de red'); }
+            });
+
+            // PASSWORD RECOVERY STEP 3: RESET PASS
+            $('#finalResetForm').on('submit', async function (e) {
+                e.preventDefault();
+                const newPassword = $('#newPassword').val().trim();
+                const confirm = $('#confirmNewPassword').val().trim();
+
+                if (newPassword !== confirm) {
+                    showAlert('🚧', 'Error', 'Las contraseñas no coinciden.', 'error');
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_URL}/reset-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: recoveryEmail, codigo: recoveryCode, newPassword })
+                    });
+                    const d = await res.json();
+
+                    if (res.ok) {
+                        showAlert('🎉', 'Contraseña Actualizada', 'Ya puedes iniciar sesión con tu nueva clave.', 'success');
+                        showLogin();
+                    } else {
+                        showAlert('❌', 'Error', d.error, 'error');
+                    }
+                } catch (e) { showAlert('🔌', 'Error', 'Error de red'); }
+            });
+        });
+
+        function processLogin(data, remember) {
+            const storage = remember ? localStorage : sessionStorage;
+            if (remember) sessionStorage.clear(); else localStorage.clear();
+
+            storage.setItem('token', data.token);
+            storage.setItem('usuario', JSON.stringify(data.usuario));
+
+            if (data.usuario.rol === 'admin') storage.setItem('userRole', 'admin');
+            else storage.setItem('userRole', 'cliente');
+
+            // USAR REPLACE para que no se pueda volver al login con "Atrás"
+            window.location.replace('home.html');
+        }
+
+        // GOOGLE CALLBACK
+        function handleCredentialResponse(response) {
+            fetch(`${API_URL}/google`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: response.credential })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.token) processLogin(data, true);
+                    else showAlert('❌', 'Error', 'Fallo Google Auth');
+                });
+        }
+    </script>
+</body>
+
+</html>
