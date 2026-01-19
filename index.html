@@ -246,6 +246,16 @@
         </div>
     </div>
 
+    <!-- Branded Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <img src="Imagenes/logo.png" class="loading-logo" alt="Cargando...">
+        </div>
+        <h3 class="loading-text" id="loadingText">Cargando...</h3>
+        <p class="loading-subtext" id="loadingSubtext">Por favor espere</p>
+    </div>
+
     <script>
         const API_URL = 'https://tienda-caserita-api.onrender.com/api/auth';
         let registeredEmail = ''; // Para verificación registro
@@ -298,16 +308,20 @@
 
         // --- LOADING --- (Para esperas de Render)
         function showLoading(msg = 'Iniciando sesión...') {
-            $('#modalIcon').text('⏳');
-            $('#modalTitle').text('Conectando');
-            $('#modalMessage').html(msg + '<br><small style="font-size:12px; color:#999">(Puede tardar unos segundos si el servidor "duerme")</small>');
-            $('#modalBtn').hide();
-            $('#modalOverlay').addClass('active');
+            $('#loadingText').text(msg);
+
+            // Mensaje personalizado para el "cold start" de Render
+            if (msg.includes('Iniciando') || msg.includes('Verificando')) {
+                $('#loadingSubtext').text('Conectando con el servidor seguro...');
+            } else {
+                $('#loadingSubtext').text('Por favor espere un momento');
+            }
+
+            $('#loadingOverlay').addClass('active');
         }
 
         function hideLoading() {
-            $('#modalOverlay').removeClass('active');
-            setTimeout(() => $('#modalBtn').show(), 300); // Restaurar botón
+            $('#loadingOverlay').removeClass('active');
         }
 
         // --- LOGICA ---
