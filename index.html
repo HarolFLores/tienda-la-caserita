@@ -252,8 +252,7 @@
             <div class="loading-spinner"></div>
             <img src="Imagenes/logo.png" class="loading-logo" alt="Cargando...">
         </div>
-        <h3 class="loading-text" id="loadingText">Cargando...</h3>
-        <p class="loading-subtext" id="loadingSubtext">Por favor espere</p>
+        <h3 class="loading-text">Cargando...</h3>
     </div>
 
     <script>
@@ -307,16 +306,8 @@
         function closeModal() { $('#modalOverlay').removeClass('active'); }
 
         // --- LOADING --- (Para esperas de Render)
-        function showLoading(msg = 'Iniciando sesión...') {
-            $('#loadingText').text(msg);
-
-            // Mensaje personalizado para el "cold start" de Render
-            if (msg.includes('Iniciando') || msg.includes('Verificando')) {
-                $('#loadingSubtext').text('Conectando con el servidor seguro...');
-            } else {
-                $('#loadingSubtext').text('Por favor espere un momento');
-            }
-
+        function showLoading() {
+            // Solo mostramos el overlay con el logo y "Cargando..." fijo
             $('#loadingOverlay').addClass('active');
         }
 
@@ -364,7 +355,7 @@
             // LOGIN
             $('#loginForm').on('submit', async function (e) {
                 e.preventDefault();
-                showLoading('Entrando a tu cuenta...'); // <--- LOADING
+                showLoading(); // <--- LOADING
                 const email = $('#email').val().trim();
                 const password = $('#password').val().trim();
                 const remember = $('#rememberMe').is(':checked');
@@ -522,7 +513,7 @@
 
         // GOOGLE CALLBACK
         function handleCredentialResponse(response) {
-            showLoading('Verificando con Google...'); // Mostrar carga
+            showLoading(); // Mostrar carga
 
             fetch(`${API_URL}/google`, {
                 method: 'POST',
