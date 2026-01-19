@@ -296,6 +296,20 @@
         }
         function closeModal() { $('#modalOverlay').removeClass('active'); }
 
+        // --- LOADING --- (Para esperas de Render)
+        function showLoading(msg = 'Iniciando sesión...') {
+            $('#modalIcon').text('⏳');
+            $('#modalTitle').text('Conectando');
+            $('#modalMessage').html(msg + '<br><small style="font-size:12px; color:#999">(Puede tardar unos segundos si el servidor "duerme")</small>');
+            $('#modalBtn').hide();
+            $('#modalOverlay').addClass('active');
+        }
+
+        function hideLoading() {
+            $('#modalOverlay').removeClass('active');
+            setTimeout(() => $('#modalBtn').show(), 300); // Restaurar botón
+        }
+
         // --- LOGICA ---
         $(document).ready(function () {
             const savedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -336,6 +350,7 @@
             // LOGIN
             $('#loginForm').on('submit', async function (e) {
                 e.preventDefault();
+                showLoading('Entrando a tu cuenta...'); // <--- LOADING
                 const email = $('#email').val().trim();
                 const password = $('#password').val().trim();
                 const remember = $('#rememberMe').is(':checked');
@@ -347,6 +362,8 @@
                         body: JSON.stringify({ email, password })
                     });
                     const data = await res.json();
+
+                    hideLoading(); // <--- Ocultar al terminar
 
                     if (res.ok) {
                         processLogin(data, remember);
@@ -362,7 +379,10 @@
                             showAlert('⚠️', 'Error', data.error, 'error');
                         }
                     }
-                } catch (err) { showAlert('🔌', 'Error', 'Fallo de conexión'); }
+                } catch (err) {
+                    hideLoading();
+                    showAlert('🔌', 'Error', 'Fallo de conexión');
+                }
             });
 
             // REGISTER
@@ -488,6 +508,8 @@
 
         // GOOGLE CALLBACK
         function handleCredentialResponse(response) {
+            showLoading('Verificando con Google...'); // Mostrar carga
+
             fetch(`${API_URL}/google`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -495,8 +517,13 @@
             })
                 .then(res => res.json())
                 .then(data => {
+                    hideLoading(); // Ocultar carga
                     if (data.token) processLogin(data, true);
                     else showAlert('❌', 'Error', 'Fallo Google Auth');
+                })
+                .catch(err => {
+                    hideLoading();
+                    showAlert('🔌', 'Error', 'No se pudo conectar al servidor.');
                 });
         }
     </script>
