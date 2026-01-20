@@ -1427,18 +1427,26 @@ $(document).ready(function () {
             const descuento = prod.precioAnterior ? Math.round((1 - prod.precio / prod.precioAnterior) * 100) : 0;
 
             $grid.append(`
-                <div class="search-result-card" data-id="${prod.id}">
-                    ${descuento > 0 ? `<span class="discount-badge">-${descuento}%</span>` : ''}
-                    <div class="card-img" onclick="abrirDetalleProducto('${prod.id}')">
+                <div class="producto-card-modern" data-id="${prod.id}" onclick="abrirDetalleProducto('${prod.id}')" style="cursor:pointer;">
+                    ${descuento > 0 ? `<div class="tag-limit" style="position:absolute; top:10px; left:10px; background:#ef4444; color:white; padding:4px 8px; border-radius:12px; font-size:12px; font-weight:bold;">-${descuento}%</div>` : ''}
+                    <div class="card-image">
                         <img src="${prod.img}" onerror="this.src='Imagenes/producto-placeholder.png'" alt="${prod.titulo}">
                     </div>
-                    <div class="card-name" onclick="abrirDetalleProducto('${prod.id}')">${prod.titulo}</div>
-                    <div class="card-prices">
-                        <span class="price-label">Precio Online</span>
-                        <span class="price-current">S/ ${prod.precio.toFixed(2)}</span>
-                        ${prod.precioAnterior ? `<span class="price-old">S/ ${prod.precioAnterior.toFixed(2)}</span>` : ''}
+                    <div class="card-content">
+                        <h3 class="card-title">${prod.titulo}</h3>
+                        <div class="card-price-row">
+                            <span class="card-price">S/ ${prod.precio.toFixed(2)}</span>
+                            ${prod.precioAnterior ? `<span class="price-old" style="text-decoration:line-through; color:#999; font-size:0.9em; margin-left:5px;">S/ ${prod.precioAnterior.toFixed(2)}</span>` : ''}
+                        </div>
+                        <button class="btn-agregar-modern" onclick="event.stopPropagation(); agregarRapido('${prod.id}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            Agregar
+                        </button>
                     </div>
-                    <button class="btn-add" onclick="agregarRapido('${prod.id}')">AGREGAR</button>
                 </div>
             `);
         }
