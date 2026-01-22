@@ -741,11 +741,13 @@ $(document).ready(function () {
         // Cargar productos complementarios (diferente categoría)
         cargarProductosComplementarios(producto);
 
-        // Resetear scroll al inicio siempre
-        $('.product-detail-body').scrollTop(0);
-
-        // Abrir modal
+        // Abrir modal primero
         abrirModal('modalDetalleProducto');
+
+        // Resetear scroll DESPUÉS de que el modal es visible (necesario para móviles)
+        setTimeout(() => {
+            document.querySelector('.product-detail-body').scrollTop = 0;
+        }, 50);
     };
 
     // Cargar productos relacionados
