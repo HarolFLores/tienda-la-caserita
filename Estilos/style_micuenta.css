@@ -4,11 +4,18 @@
     box-sizing: border-box;
 }
 
+/* Fix global para evitar desbordes */
+html,
+body {
+    width: 100%;
+    overflow-x: hidden !important;
+    position: relative;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
     min-height: 100vh;
-    overflow-x: hidden;
     /* Prevent horizontal scroll */
     width: 100%;
 }
@@ -473,16 +480,33 @@ body {
         padding: 10px 15px;
     }
 
+    .header-content {
+        flex-wrap: wrap;
+        /* Permitir que baje si no cabe */
+        justify-content: center;
+        gap: 15px;
+    }
+
     .header-title {
         font-size: 1.1rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        order: 2;
+        /* Reordenar si es necesario */
+        width: 100%;
+        /* Que ocupe una línea propia si hace falta */
+        text-align: center;
+    }
+
+    .btn-back {
+        order: 1;
     }
 
     .btn-logout-header {
         padding: 8px 12px;
         font-size: 0.8rem;
+        order: 3;
     }
 }
 
