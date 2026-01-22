@@ -741,6 +741,9 @@ $(document).ready(function () {
         // Cargar productos complementarios (diferente categoría)
         cargarProductosComplementarios(producto);
 
+        // Resetear scroll al inicio siempre
+        $('.product-detail-body').scrollTop(0);
+
         // Abrir modal
         abrirModal('modalDetalleProducto');
     };
