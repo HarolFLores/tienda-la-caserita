@@ -422,29 +422,28 @@ body {
     .profile-card {
         flex-direction: column;
         text-align: center;
-        padding: 30px 20px;
+        padding: 20px 15px;
+        /* Más compacto */
         width: 100%;
-        /* Asegurar ancho */
         box-sizing: border-box;
-        /* Importante para padding */
     }
 
     .avatar-circle {
-        width: 80px;
-        height: 80px;
-        font-size: 2.5rem;
+        width: 70px;
+        /* Un poco más pequeño */
+        height: 70px;
+        font-size: 2rem;
         margin-bottom: 15px;
     }
 
     .profile-info h2 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         word-break: break-word;
-        /* Evitar que nombres largos rompan el layout */
     }
 
     .account-section {
-        padding: 20px 15px;
-        /* Menos padding */
+        padding: 15px 12px;
+        /* Reducir padding drásticamente para ganar espacio */
         width: 100%;
         box-sizing: border-box;
     }
