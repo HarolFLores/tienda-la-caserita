@@ -1366,7 +1366,7 @@ $(document).ready(function () {
                         <span class="price-current">S/ ${prod.precio.toFixed(2)}</span>
                         ${prod.precioAnterior ? `<span class="price-old">S/ ${prod.precioAnterior.toFixed(2)}</span>` : ''}
                     </div>
-                    <button class="btn-add" onclick="agregarRapido('${prod.id}')">AGREGAR</button>
+                    <button class="btn-add" onclick="event.stopPropagation(); agregarRapido('${prod.id}')">AGREGAR</button>
                 </div>
             `);
         });
