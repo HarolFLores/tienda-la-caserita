@@ -440,8 +440,8 @@ $(document).ready(function () {
 
     // Agregar rápido desde búsqueda (busca el producto por ID y lo agrega al carrito)
     window.agregarRapido = function (id) {
-        // Buscar en productos y sugerencias
-        const todos = [...productosCatDB, ...sugerenciasDB];
+        // Buscar en productos, sugerencias Y resultados de búsqueda
+        const todos = [...productosCatDB, ...sugerenciasDB, ...searchResultsAll];
         const prod = todos.find(p => p.id == id || p.id === id);
 
         if (prod) {
@@ -460,6 +460,7 @@ $(document).ready(function () {
             $('#cartOverlay').addClass('active');
         } else {
             console.error('Producto no encontrado:', id);
+            showAlert('Error', 'No se pudo agregar el producto', 'error');
         }
     };
 
