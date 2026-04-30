@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Checkout - Tienda La Caserita</title>
+    <link rel="stylesheet" href="Estilos/style_checkout.css">
+</head>
+<body>
+    <header class="checkout-header">
+        <div class="header-content">
+            <a href="home.html" class="btn-back">←</a>
+            <h1 class="header-logo">Tienda "La Caserita"</h1>
+            <div class="header-icons">
+                <button class="btn-icon">🔔</button>
+                <button class="btn-user">👤 Usuario</button>
+                <button class="btn-cart">🛒 Carrito (1)</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="checkout-container">
+        <div class="checkout-left">
+            <section class="checkout-section">
+                <div class="section-header">
+                    <h2>Dirección de entrega</h2>
+                    <button class="btn-change">Cambiar</button>
+                </div>
+                <div class="delivery-address">
+                    <p class="address-main">Avenida Grau # 2371</p>
+                    <p class="address-detail">*Tocar timbre dos veces</p>
+                </div>
+            </section>
+
+            <section class="checkout-section">
+                <h2>Método de entrega</h2>
+                
+                <div class="delivery-option selected">
+                    <input type="radio" name="delivery" id="delivery1" checked>
+                    <label for="delivery1">
+                        <div class="option-content">
+                            <h3>Delivery a domicilio</h3>
+                            <p>Recibe tu pedido en la puerta de tu casa</p>
+                            <p class="time-estimate">Tiempo estimado: 30-45 min</p>
+                            <p class="delivery-cost">Costo de envío: S/ 5.00</p> 
+                        </div>
+                    </label>
+                </div>
+
+                <div class="delivery-option">
+                    <input type="radio" name="delivery" id="delivery2">
+                    <label for="delivery2">
+                        <div class="option-content">
+                            <h3>Recojo en tienda</h3>
+                            <p>Recoge tu pedido en nuestra tienda</p>
+                            <p class="time-estimate">Tiempo estimado: 15-20 min</p>
+                            <button class="btn-gratis">GRATIS</button>
+                        </div>
+                    </label>
+                </div>
+            </section>
+
+            <section class="checkout-section">
+                <h2>Método de pago</h2>
+                
+                <div class="payment-option">
+                    <input type="radio" name="payment" id="payment1" checked>
+                    <label for="payment1">
+                        <span class="payment-icon">💵</span>
+                        <span>Pago en efectivo</span>
+                    </label>
+                </div>
+
+                <div class="payment-option highlighted">
+                    <input type="radio" name="payment" id="payment2">
+                    <label for="payment2">
+                        <span class="payment-icon">📱</span>
+                        <span>Yape</span>
+                    </label>
+                </div>
+            </section>
+        </div>
+
+        <aside class="checkout-right">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h2>Resumen</h2>
+                    <button class="btn-collapse">▲</button>
+                </div>
+
+                <div class="summary-content">
+                    <div class="summary-row">
+                        <span>Costo de productos</span>
+                        <span>S/21.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Costo de envío</span>
+                        <span>S/0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tarifa de Servicio</span>
+                        <span>S/1.60</span>
+                    </div>
+
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>S/22.60</span>
+                    </div>
+
+                    <button class="btn-place-order" id="btnPlaceOrder">Hacer Pedido</button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script src="app.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const COSTO_DELIVERY = 5.00;
+            const TARIFA_SERVICIO = 1.60;
+            
+            let subtotalProductos = carrito.reduce((total, producto) => total + (producto.precio * producto.cantidad), 0);
+
+            actualizarResumen();
+
+            $('input[name="delivery"]').change(function() {
+                $('.delivery-option').removeClass('selected');
+                $(this).closest('.delivery-option').addClass('selected');
+                
+                actualizarResumen();    
+            });
+
+            $('input[name="payment"]').change(function() {
+                $('.payment-option').removeClass('highlighted');
+                if ($(this).attr('id') === 'payment2') {
+                    $(this).closest('.payment-option').addClass('highlighted');
+                }
+            });
+
+            $('.btn-collapse').click(function() {
+                $('.summary-content').slideToggle(300);
+                $(this).toggleClass('collapsed');
+                $(this).text($(this).hasClass('collapsed') ? '▼' : '▲');
+            });
+
+            $('#btnPlaceOrder').click(function() {
+                if(carrito.length === 0) {
+                    alert("Tu carrito está vacío");
+                    return;
+                }
+                
+                alert('¡Pedido realizado con éxito! Gracias por tu compra!');
+
+                localStorage.removeItem('carrito');
+                
+                window.location.href = 'mi_cuenta.html';
+            });
+
+            function actualizarResumen() {
+                let costoEnvioActual = 0;
+
+                if ($('#delivery1').is(':checked')) {
+                    costoEnvioActual = COSTO_DELIVERY; 
+                } else {
+                    costoEnvioActual = 0.00;
+                }
+
+                let totalPagar = subtotalProductos + costoEnvioActual + TARIFA_SERVICIO;
+
+                $('.summary-row:eq(0) span:last-child').text('S/ ' + subtotalProductos.toFixed(2));
+                
+                $('.summary-row:eq(1) span:last-child').text('S/ ' + costoEnvioActual.toFixed(2));
+                
+                $('.summary-row:eq(2) span:last-child').text('S/ ' + TARIFA_SERVICIO.toFixed(2));
+
+                $('.summary-total span:last-child').text('S/ ' + totalPagar.toFixed(2));
+            }
+        });
+    </script>
+</body>
+</html>

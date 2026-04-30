@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Carrito - Tienda La Caserita</title>
+    <link rel="stylesheet" href="Estilos/style_carrito.css">
+</head>
+<body>
+    <div class="cart-overlay" id="cartOverlay"></div>
+    
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Carrito</h2>
+            <button class="btn-close-cart" id="closeCart">&times;</button>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>S/ 00.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Entrega</span>
+                    <span>S/ 00.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>S/ 00.00</span>
+                </div>
+            </div>
+            <button class="btn-checkout" id="btnCheckout">VER CARRITO</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            
+            $('.btn-cart, .btn-cart-mobile').click(function() {
+                $('#cartSidebar').addClass('active');
+                $('#cartOverlay').addClass('active');
+                $('body').css('overflow', 'hidden');
+            });
+
+            $('#closeCart, #cartOverlay').click(function() {
+                $('#cartSidebar').removeClass('active');
+                $('#cartOverlay').removeClass('active');
+                $('body').css('overflow', '');  
+            });
+
+            $('.btn-quantity.plus').click(function() {
+                const $input = $(this).siblings('.quantity-input');
+                $input.val(parseInt($input.val()) + 1);
+                updateCartTotal();
+            });
+
+            $('.btn-quantity.minus').click(function() {
+                const $input = $(this).siblings('.quantity-input');
+                const currentVal = parseInt($input.val());
+                if (currentVal > 1) {
+                    $input.val(currentVal - 1);
+                    updateCartTotal();
+                }
+            });
+
+            $('.btn-remove-item').click(function() {
+                $(this).closest('.cart-item').fadeOut(300, function() {
+                    $(this).remove();
+                    updateCartTotal();
+                });
+            });
+
+
+            $('#btnCheckout').click(function() {
+                window.location.href = 'checkout.html';
+            });
+
+            function updateCartTotal() {
+              
+                let total = 0;
+                $('.cart-item').each(function() {
+                    const price = parseFloat($(this).find('.item-price').text().replace('S/ ', ''));
+                    const quantity = parseInt($(this).find('.quantity-input').val());
+                    total += price * quantity;
+                });
+                
+                $('.summary-row.total span:last-child').text('S/ ' + total.toFixed(2));
+            }
+        });
+    </script>
+</body>
+</html>
