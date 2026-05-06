@@ -110,10 +110,6 @@
                         <span>Costo de envío</span>
                         <span>S/0.00</span>
                     </div>
-                    <div class="summary-row">
-                        <span>Tarifa de Servicio</span>
-                        <span>S/1.60</span>
-                    </div>
 
                     <div class="summary-total">
                         <span>Total</span>
@@ -179,7 +175,6 @@
         $(document).ready(async function() {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             const COSTO_DELIVERY = 5.00;
-            const TARIFA_SERVICIO = 1.60;
             const token = localStorage.getItem('token');
             let userAddresses = [];
             let selectedAddress = null;
@@ -382,7 +377,7 @@
 
                 try {
                     let costoEnvioActual = $('#delivery1').is(':checked') ? COSTO_DELIVERY : 0;
-                    let totalPagar = subtotalProductos + costoEnvioActual + TARIFA_SERVICIO;
+                    let totalPagar = subtotalProductos + costoEnvioActual;
                     
                     const metodoPago = $('#payment2').closest('.payment-option').hasClass('highlighted') ? 'Yape' : 'Efectivo';
                     const direccionStr = $('#delivery1').is(':checked') ? `${selectedAddress.calle}, ${selectedAddress.ciudad}` : 'Recojo en tienda';
@@ -439,11 +434,10 @@
                     costoEnvioActual = 0.00;
                 }
 
-                let totalPagar = subtotalProductos + costoEnvioActual + TARIFA_SERVICIO;
+                let totalPagar = subtotalProductos + costoEnvioActual;
 
                 $('.summary-row:eq(0) span:last-child').text('S/ ' + subtotalProductos.toFixed(2));
                 $('.summary-row:eq(1) span:last-child').text('S/ ' + costoEnvioActual.toFixed(2));
-                $('.summary-row:eq(2) span:last-child').text('S/ ' + TARIFA_SERVICIO.toFixed(2));
                 $('.summary-total span:last-child').text('S/ ' + totalPagar.toFixed(2));
             }
         });
