@@ -136,6 +136,38 @@
             <div class="modal-body" id="addressList">
                 <p>Cargando direcciones...</p>
             </div>
+            <button id="btnOpenNewAddress" class="btn-place-order" style="margin-top: 15px; background: #10b981;">+ Nueva Dirección</button>
+        </div>
+    </div>
+
+    <!-- MODAL NUEVA DIRECCIÓN -->
+    <div id="newAddressModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Agregar Dirección</h2>
+                <button class="btn-close-new-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="newAddressForm">
+                    <div class="form-group">
+                        <label>Título (Ej. Casa, Oficina)</label>
+                        <input type="text" id="newAddrTitle" required placeholder="Ej: Casa">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciudad</label>
+                        <input type="text" id="newAddrCity" required placeholder="Ej: Lima">
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección / Calle</label>
+                        <input type="text" id="newAddrStreet" required placeholder="Av. Principal 123">
+                    </div>
+                    <div class="form-group">
+                        <label>Referencia (Opcional)</label>
+                        <input type="text" id="newAddrRef" placeholder="Ej: Frente al parque">
+                    </div>
+                    <button type="submit" class="btn-place-order" style="margin-top: 15px;">Guardar Dirección</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -205,7 +237,7 @@
                         userAddresses = user.direcciones || [];
                         if (userAddresses.length === 0) {
                             $('.address-main').html('No tienes direcciones guardadas.');
-                            $('.address-detail').html('<a href="mi_cuenta.html" style="color:#0d7a9e; font-weight:bold; text-decoration:none;">+ Agregar una dirección aquí</a>');
+                            $('.address-detail').html('<a href="#" id="openNewAddressLink" style="color:#0d7a9e; font-weight:bold; text-decoration:none;">+ Agregar una dirección aquí</a>');
                             $('.btn-change').hide(); // Ocultar el botón Cambiar si no hay direcciones
                             selectedAddress = null;
                         } else {
@@ -218,8 +250,8 @@
                     }
                 } catch (error) {
                     console.error("Error cargando usuario:", error);
-                    $('.address-main').html('No tienes direcciones guardadas.');
-                    $('.address-detail').html('<a href="mi_cuenta.html" style="color:#0d7a9e; font-weight:bold; text-decoration:none;">+ Agregar una dirección aquí</a>');
+                    $('.address-main').html('No pudimos cargar tus direcciones.');
+                    $('.address-detail').html('<a href="#" id="openNewAddressLink" style="color:#0d7a9e; font-weight:bold; text-decoration:none;">+ Agregar una dirección aquí</a>');
                     $('.btn-change').hide();
                     selectedAddress = null;
                 }
@@ -245,6 +277,54 @@
             $('#addressModal').click(function(e) {
                 if (e.target.id === 'addressModal') {
                     $('#addressModal').removeClass('active');
+                }
+            });
+
+            // Lógica del Modal Nueva Dirección
+            $(document).on('click', '#openNewAddressLink, #btnOpenNewAddress', function(e) {
+                e.preventDefault();
+                $('#addressModal').removeClass('active');
+                $('#newAddressModal').addClass('active');
+            });
+
+            $('.btn-close-new-modal').click(function() {
+                $('#newAddressModal').removeClass('active');
+            });
+
+            $('#newAddressForm').submit(async function(e) {
+                e.preventDefault();
+                const btn = $(this).find('button[type="submit"]');
+                btn.text('Guardando...').prop('disabled', true);
+                
+                const data = {
+                    titulo: $('#newAddrTitle').val(),
+                    ciudad: $('#newAddrCity').val(),
+                    calle: $('#newAddrStreet').val(),
+                    referencia: $('#newAddrRef').val()
+                };
+
+                try {
+                    const res = await fetch('https://tienda-caserita-api.onrender.com/api/auth/address', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if(res.ok) {
+                        showToast('Dirección agregada con éxito', 'success');
+                        $('#newAddressModal').removeClass('active');
+                        $('#newAddressForm')[0].reset();
+                        await cargarUsuario(); // Recargar las direcciones
+                    } else {
+                        showToast('Error al guardar la dirección', 'error');
+                    }
+                } catch(error) {
+                    showToast('Error de conexión', 'error');
+                } finally {
+                    btn.text('Guardar Dirección').prop('disabled', false);
                 }
             });
 
