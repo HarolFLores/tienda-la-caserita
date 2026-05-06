@@ -142,32 +142,28 @@
 
     <!-- MODAL NUEVA DIRECCIÓN -->
     <div id="newAddressModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Agregar Dirección</h2>
-                <button class="btn-close-new-modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="newAddressForm">
-                    <div class="form-group">
-                        <label>Título (Ej. Casa, Oficina)</label>
-                        <input type="text" id="newAddrTitle" required placeholder="Ej: Casa">
-                    </div>
-                    <div class="form-group">
-                        <label>Ciudad</label>
-                        <input type="text" id="newAddrCity" required placeholder="Ej: Lima">
-                    </div>
-                    <div class="form-group">
-                        <label>Dirección / Calle</label>
-                        <input type="text" id="newAddrStreet" required placeholder="Av. Principal 123">
-                    </div>
-                    <div class="form-group">
-                        <label>Referencia (Opcional)</label>
-                        <input type="text" id="newAddrRef" placeholder="Ej: Frente al parque">
-                    </div>
-                    <button type="submit" class="btn-place-order" style="margin-top: 15px;">Guardar Dirección</button>
-                </form>
-            </div>
+        <div class="custom-modal">
+            <h3 style="margin-bottom: 20px; text-align: center; font-size: 1.3rem; color: #000;" id="modalTitle">Nueva Dirección</h3>
+            <form id="newAddressForm">
+                <div class="modal-form-group">
+                    <label>Título (Ej. Casa, Oficina)</label>
+                    <input type="text" id="newAddrTitle" required placeholder="Ej: Casa de Playa">
+                </div>
+                <div class="modal-form-group">
+                    <label>Ciudad</label>
+                    <input type="text" id="newAddrCity" required placeholder="Ej: Lima">
+                </div>
+                <div class="modal-form-group">
+                    <label>Dirección / Calle</label>
+                    <input type="text" id="newAddrStreet" required placeholder="Av. Principal 123">
+                </div>
+                <div class="modal-form-group">
+                    <label>Referencia (Opcional)</label>
+                    <input type="text" id="newAddrRef" placeholder="Frente al parque...">
+                </div>
+                <button type="submit" class="btn-save-modal">Guardar Dirección</button>
+                <button type="button" class="btn-cancel-modal btn-close-new-modal" style="display:block; text-align:center;">Cancelar</button>
+            </form>
         </div>
     </div>
 
