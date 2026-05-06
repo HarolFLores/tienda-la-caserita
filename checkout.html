@@ -40,8 +40,8 @@
                     <button class="btn-change">Cambiar</button>
                 </div>
                 <div class="delivery-address">
-                    <p class="address-main">Avenida Grau # 2371</p>
-                    <p class="address-detail">*Tocar timbre dos veces</p>
+                    <p class="address-main">Cargando direcciones...</p>
+                    <p class="address-detail"></p>
                 </div>
             </section>
 
@@ -218,8 +218,8 @@
                     }
                 } catch (error) {
                     console.error("Error cargando usuario:", error);
-                    $('.address-main').html('Error de conexión con el servidor.');
-                    $('.address-detail').html('No pudimos cargar tus direcciones.');
+                    $('.address-main').html('No tienes direcciones guardadas.');
+                    $('.address-detail').html('<a href="mi_cuenta.html" style="color:#0d7a9e; font-weight:bold; text-decoration:none;">+ Agregar una dirección aquí</a>');
                     $('.btn-change').hide();
                     selectedAddress = null;
                 }
