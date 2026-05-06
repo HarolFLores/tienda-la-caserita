@@ -203,42 +203,25 @@
                     if (response.ok) {
                         const user = await response.json();
                         userAddresses = user.direcciones || [];
-                        
-                        // Si no tiene direcciones, agregar una por defecto para que no se bloquee el checkout
                         if (userAddresses.length === 0) {
-                            userAddresses.push({
-                                _id: 'default',
-                                titulo: 'Dirección por defecto',
-                                calle: 'Avenida Grau # 2371',
-                                ciudad: 'Mi Ciudad',
-                                referencia: '*Tocar timbre dos veces'
-                            });
+                            $('.address-main').html('No tienes direcciones guardadas.');
+                            $('.address-detail').html('<a href="mi_cuenta.html" style="color:#0d7a9e; font-weight:bold; text-decoration:none;">+ Agregar una dirección aquí</a>');
+                            $('.btn-change').hide(); // Ocultar el botón Cambiar si no hay direcciones
+                            selectedAddress = null;
+                        } else {
+                            $('.btn-change').show();
+                            // Seleccionar SIEMPRE la última dirección registrada/escogida
+                            seleccionarDireccion(userAddresses[userAddresses.length - 1]);
                         }
-                        
-                        // Seleccionar SIEMPRE la última dirección registrada/escogida
-                        seleccionarDireccion(userAddresses[userAddresses.length - 1]);
                     } else {
-                        // Fallback si falla la petición
-                        userAddresses = [{
-                            _id: 'default',
-                            titulo: 'Dirección Local',
-                            calle: 'Avenida Grau # 2371',
-                            ciudad: 'Mi Ciudad',
-                            referencia: '*Tocar timbre dos veces'
-                        }];
-                        seleccionarDireccion(userAddresses[0]);
+                        throw new Error('Error de respuesta del servidor');
                     }
                 } catch (error) {
                     console.error("Error cargando usuario:", error);
-                    // Fallback en caso de error de conexión (ej. GitHub Pages)
-                    userAddresses = [{
-                        _id: 'default',
-                        titulo: 'Dirección Local',
-                        calle: 'Avenida Grau # 2371',
-                        ciudad: 'Mi Ciudad',
-                        referencia: '*Tocar timbre dos veces'
-                    }];
-                    seleccionarDireccion(userAddresses[0]);
+                    $('.address-main').html('Error de conexión con el servidor.');
+                    $('.address-detail').html('No pudimos cargar tus direcciones.');
+                    $('.btn-change').hide();
+                    selectedAddress = null;
                 }
             }
 
