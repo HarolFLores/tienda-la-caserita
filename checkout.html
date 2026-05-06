@@ -13,7 +13,19 @@
             <a href="home.html" class="btn-back">←</a>
             <h1 class="header-logo">Tienda "La Caserita"</h1>
             <div class="header-icons">
-                <button class="btn-icon">🔔</button>
+                <div class="notification-wrapper">
+                    <button class="btn-icon" id="btnNotif">🔔<span class="badge">1</span></button>
+                    <div class="notification-dropdown" id="notifDropdown">
+                        <h4>Notificaciones</h4>
+                        <div class="notif-item unread">
+                            <span class="notif-icon">🎉</span>
+                            <div class="notif-content">
+                                <p>¡Tienes un cupón de 10% de descuento!</p>
+                                <small>Hace 2 horas</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <button class="btn-user">👤 Usuario</button>
                 <button class="btn-cart">🛒 Carrito (1)</button>
             </div>
@@ -72,7 +84,7 @@
                     </label>
                 </div>
 
-                <div class="payment-option highlighted">
+                <div class="payment-option">
                     <input type="radio" name="payment" id="payment2">
                     <label for="payment2">
                         <span class="payment-icon">📱</span>
@@ -114,22 +126,122 @@
         </aside>
     </main>
 
+    <!-- MODAL DE DIRECCIONES -->
+    <div id="addressModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mis Direcciones</h2>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="addressList">
+                <p>Cargando direcciones...</p>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(async function() {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             const COSTO_DELIVERY = 5.00;
             const TARIFA_SERVICIO = 1.60;
+            const token = localStorage.getItem('token');
+            let userAddresses = [];
+            let selectedAddress = null;
+
+            if (!token) {
+                alert("Debes iniciar sesión para realizar un pedido.");
+                window.location.href = 'index.html'; // Redirigir si no hay token
+                return;
+            }
             
             let subtotalProductos = carrito.reduce((total, producto) => total + (producto.precio * producto.cantidad), 0);
 
             actualizarResumen();
+            // Toggle Notifications
+            $('#btnNotif').click(function(e) {
+                e.stopPropagation();
+                $('#notifDropdown').toggleClass('active');
+            });
+            $(document).click(function() {
+                $('#notifDropdown').removeClass('active');
+            });
+            $('#notifDropdown').click(function(e) {
+                e.stopPropagation();
+            });
+
+            await cargarUsuario();
+
+            async function cargarUsuario() {
+                try {
+                    const response = await fetch('http://localhost:3000/api/auth/me', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (response.ok) {
+                        const user = await response.json();
+                        userAddresses = user.direcciones || [];
+                        if (userAddresses.length > 0) {
+                            seleccionarDireccion(userAddresses[0]);
+                        } else {
+                            $('.address-main').text("No tienes direcciones guardadas.");
+                            $('.address-detail').text("Por favor, agrega una en Mi Cuenta.");
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error cargando usuario:", error);
+                }
+            }
+
+            function seleccionarDireccion(direccion) {
+                selectedAddress = direccion;
+                $('.address-main').text(`${direccion.calle}, ${direccion.ciudad}`);
+                $('.address-detail').text(direccion.referencia ? `*${direccion.referencia}` : '');
+                $('#addressModal').removeClass('active');
+            }
+
+            // Lógica del Modal
+            $('.btn-change').click(function() {
+                renderAddressList();
+                $('#addressModal').addClass('active');
+            });
+
+            $('.btn-close-modal').click(function() {
+                $('#addressModal').removeClass('active');
+            });
+
+            $('#addressModal').click(function(e) {
+                if (e.target.id === 'addressModal') {
+                    $('#addressModal').removeClass('active');
+                }
+            });
+
+            function renderAddressList() {
+                const $list = $('#addressList');
+                $list.empty();
+                if (userAddresses.length === 0) {
+                    $list.append('<p>No tienes direcciones guardadas. Ve a tu perfil para agregarlas.</p>');
+                    return;
+                }
+                userAddresses.forEach((dir, index) => {
+                    const isSelected = selectedAddress && selectedAddress._id === dir._id;
+                    const item = $(`
+                        <div class="address-item ${isSelected ? 'selected' : ''}" data-index="${index}">
+                            <strong>${dir.titulo}</strong>
+                            <p>${dir.calle}, ${dir.ciudad}</p>
+                            ${dir.referencia ? `<small>${dir.referencia}</small>` : ''}
+                        </div>
+                    `);
+                    item.click(function() {
+                        seleccionarDireccion(userAddresses[$(this).data('index')]);
+                    });
+                    $list.append(item);
+                });
+            }
 
             $('input[name="delivery"]').change(function() {
                 $('.delivery-option').removeClass('selected');
                 $(this).closest('.delivery-option').addClass('selected');
-                
                 actualizarResumen();    
             });
 
@@ -146,17 +258,66 @@
                 $(this).text($(this).hasClass('collapsed') ? '▼' : '▲');
             });
 
-            $('#btnPlaceOrder').click(function() {
+            $('#btnPlaceOrder').click(async function() {
                 if(carrito.length === 0) {
                     alert("Tu carrito está vacío");
                     return;
                 }
-                
-                alert('¡Pedido realizado con éxito! Gracias por tu compra!');
+                if ($('#delivery1').is(':checked') && !selectedAddress) {
+                    alert("Por favor selecciona una dirección de entrega válida.");
+                    return;
+                }
 
-                localStorage.removeItem('carrito');
-                
-                window.location.href = 'mi_cuenta.html';
+                // Deshabilitar el botón mientras carga
+                const $btn = $(this);
+                $btn.prop('disabled', true).text('Procesando...');
+
+                try {
+                    let costoEnvioActual = $('#delivery1').is(':checked') ? COSTO_DELIVERY : 0;
+                    let totalPagar = subtotalProductos + costoEnvioActual + TARIFA_SERVICIO;
+                    
+                    const metodoPago = $('#payment2').closest('.payment-option').hasClass('highlighted') ? 'Yape' : 'Efectivo';
+                    const direccionStr = $('#delivery1').is(':checked') ? `${selectedAddress.calle}, ${selectedAddress.ciudad}` : 'Recojo en tienda';
+
+                    // Formatear productos para el modelo Pedido
+                    const productosPedido = carrito.map(p => ({
+                        productoId: p.id,
+                        titulo: p.titulo,
+                        cantidad: p.cantidad,
+                        precioUnitario: p.precio,
+                        subtotal: p.precio * p.cantidad
+                    }));
+
+                    const payload = {
+                        productos: productosPedido,
+                        total: totalPagar,
+                        metodoPago: metodoPago,
+                        direccionEnvio: direccionStr
+                    };
+
+                    const response = await fetch('http://localhost:3000/api/pedidos', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        alert('¡Pedido realizado con éxito! Gracias por tu compra!');
+                        localStorage.removeItem('carrito');
+                        window.location.href = 'mi_cuenta.html';
+                    } else {
+                        const data = await response.json();
+                        alert('Hubo un error al procesar el pedido: ' + (data.error || 'Intenta de nuevo'));
+                    }
+                } catch (error) {
+                    console.error('Error al enviar pedido:', error);
+                    alert('Error de conexión al procesar el pedido.');
+                } finally {
+                    $btn.prop('disabled', false).text('Hacer Pedido');
+                }
             });
 
             function actualizarResumen() {
@@ -171,11 +332,8 @@
                 let totalPagar = subtotalProductos + costoEnvioActual + TARIFA_SERVICIO;
 
                 $('.summary-row:eq(0) span:last-child').text('S/ ' + subtotalProductos.toFixed(2));
-                
                 $('.summary-row:eq(1) span:last-child').text('S/ ' + costoEnvioActual.toFixed(2));
-                
                 $('.summary-row:eq(2) span:last-child').text('S/ ' + TARIFA_SERVICIO.toFixed(2));
-
                 $('.summary-total span:last-child').text('S/ ' + totalPagar.toFixed(2));
             }
         });

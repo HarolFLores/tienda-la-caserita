@@ -26,7 +26,9 @@ const Pedido = require('./models/Pedido');
 
 // --- IMPORTAR RUTAS ---
 const authRoutes = require('./routes/authRoutes');
+const pedidoRoutes = require('./routes/pedidoRoutes');
 app.use('/api/auth', authRoutes);
+app.use('/api/pedidos', pedidoRoutes);
 
 // --- RUTAS DE PRUEBA (API) ---
 
