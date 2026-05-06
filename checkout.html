@@ -139,6 +139,12 @@
         </div>
     </div>
 
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastNotification" class="toast">
+        <span id="toastIcon"></span>
+        <p id="toastMessage"></p>
+    </div>
+
     <script src="app.js"></script>
 
     <script>
@@ -157,6 +163,22 @@
             }
             
             let subtotalProductos = carrito.reduce((total, producto) => total + (producto.precio * producto.cantidad), 0);
+
+            function showToast(message, type = 'success') {
+                const toast = $('#toastNotification');
+                toast.removeClass('success error warning').addClass(type);
+                
+                if (type === 'success') $('#toastIcon').text('✅');
+                else if (type === 'error') $('#toastIcon').text('❌');
+                else $('#toastIcon').text('⚠️');
+                
+                $('#toastMessage').text(message);
+                toast.addClass('show');
+                
+                setTimeout(() => {
+                    toast.removeClass('show');
+                }, 4000);
+            }
 
             actualizarResumen();
             // Toggle Notifications
@@ -181,15 +203,42 @@
                     if (response.ok) {
                         const user = await response.json();
                         userAddresses = user.direcciones || [];
-                        if (userAddresses.length > 0) {
-                            seleccionarDireccion(userAddresses[0]);
-                        } else {
-                            $('.address-main').text("No tienes direcciones guardadas.");
-                            $('.address-detail').text("Por favor, agrega una en Mi Cuenta.");
+                        
+                        // Si no tiene direcciones, agregar una por defecto para que no se bloquee el checkout
+                        if (userAddresses.length === 0) {
+                            userAddresses.push({
+                                _id: 'default',
+                                titulo: 'Dirección por defecto',
+                                calle: 'Avenida Grau # 2371',
+                                ciudad: 'Mi Ciudad',
+                                referencia: '*Tocar timbre dos veces'
+                            });
                         }
+                        
+                        // Seleccionar SIEMPRE la última dirección registrada/escogida
+                        seleccionarDireccion(userAddresses[userAddresses.length - 1]);
+                    } else {
+                        // Fallback si falla la petición
+                        userAddresses = [{
+                            _id: 'default',
+                            titulo: 'Dirección Local',
+                            calle: 'Avenida Grau # 2371',
+                            ciudad: 'Mi Ciudad',
+                            referencia: '*Tocar timbre dos veces'
+                        }];
+                        seleccionarDireccion(userAddresses[0]);
                     }
                 } catch (error) {
                     console.error("Error cargando usuario:", error);
+                    // Fallback en caso de error de conexión (ej. GitHub Pages)
+                    userAddresses = [{
+                        _id: 'default',
+                        titulo: 'Dirección Local',
+                        calle: 'Avenida Grau # 2371',
+                        ciudad: 'Mi Ciudad',
+                        referencia: '*Tocar timbre dos veces'
+                    }];
+                    seleccionarDireccion(userAddresses[0]);
                 }
             }
 
@@ -260,11 +309,11 @@
 
             $('#btnPlaceOrder').click(async function() {
                 if(carrito.length === 0) {
-                    alert("Tu carrito está vacío");
+                    showToast("Tu carrito está vacío", "warning");
                     return;
                 }
                 if ($('#delivery1').is(':checked') && !selectedAddress) {
-                    alert("Por favor selecciona una dirección de entrega válida.");
+                    showToast("Por favor selecciona una dirección de entrega válida.", "warning");
                     return;
                 }
 
@@ -305,16 +354,18 @@
                     });
 
                     if (response.ok) {
-                        alert('¡Pedido realizado con éxito! Gracias por tu compra!');
+                        showToast('¡Pedido realizado con éxito! Redirigiendo...', 'success');
                         localStorage.removeItem('carrito');
-                        window.location.href = 'mi_cuenta.html';
+                        setTimeout(() => {
+                            window.location.href = 'mi_cuenta.html';
+                        }, 2000);
                     } else {
                         const data = await response.json();
-                        alert('Hubo un error al procesar el pedido: ' + (data.error || 'Intenta de nuevo'));
+                        showToast('Error al procesar: ' + (data.error || 'Intenta de nuevo'), 'error');
                     }
                 } catch (error) {
                     console.error('Error al enviar pedido:', error);
-                    alert('Error de conexión al procesar el pedido.');
+                    showToast('Error de conexión al procesar el pedido.', 'error');
                 } finally {
                     $btn.prop('disabled', false).text('Hacer Pedido');
                 }

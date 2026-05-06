@@ -482,6 +482,32 @@ body {
 .notif-content p { font-size: 0.9rem; color: #374151; margin: 0 0 5px 0; font-weight: 500; }
 .notif-content small { font-size: 0.75rem; color: #9ca3af; }
 
+/* TOAST NOTIFICATION */
+.toast {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    color: #111827;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 5000;
+    transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    font-weight: 500;
+    border-left: 5px solid #0d7a9e;
+}
+.toast.show {
+    bottom: 30px;
+}
+.toast.success { border-left-color: #10b981; }
+.toast.error { border-left-color: #ef4444; }
+.toast.warning { border-left-color: #f59e0b; }
+
 /* RESPONSIVE */
 @media (max-width: 1024px) {
     .checkout-container {
