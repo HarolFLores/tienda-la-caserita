@@ -1040,34 +1040,7 @@ $(document).ready(function () {
         `;
 
         productos.forEach(prod => {
-            let deleteBtn = '';
-            if (userRole === 'admin') {
-                deleteBtn = `<button class="btn-delete-item" onclick="handleDeleteClick(event, '${prod.id}')" title="Eliminar" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center; font-size:14px;">🗑️</button>`;
-            }
-
-            html += `
-                <div class="producto-card-modern" data-id="${prod.id}" data-tipo="categoria" style="position:relative;">
-                    ${deleteBtn}
-                    <div class="card-image">
-                        <img src="${prod.img}" onerror="this.src='Imagenes/producto-placeholder.png'" alt="${prod.titulo}">
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${prod.titulo}</h3>
-                        <div class="card-price-row">
-                            <span class="card-price">S/ ${prod.precio.toFixed(2)}</span>
-                            <span class="card-stock">✓ En stock</span>
-                        </div>
-                        <button class="btn-agregar-modern">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                            Agregar
-                        </button>
-                    </div>
-                </div>
-            `;
+            html += crearHTMLProducto(prod, 'categoria');
         });
 
         html += '</div></section>';
@@ -1123,34 +1096,7 @@ $(document).ready(function () {
 
         let productosHtml = '';
         productos.forEach(prod => {
-            let deleteBtn = '';
-            if (userRole === 'admin') {
-                deleteBtn = `<button class="btn-delete-item" onclick="handleDeleteClick(event, '${prod.id}')" title="Eliminar" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center; font-size:14px;">🗑️</button>`;
-            }
-
-            productosHtml += `
-                <div class="producto-card-modern" data-id="${prod.id}" data-tipo="categoria" style="position:relative;">
-                    ${deleteBtn}
-                    <div class="card-image">
-                        <img src="${prod.img}" onerror="this.src='Imagenes/producto-placeholder.png'" alt="${prod.titulo}">
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${prod.titulo}</h3>
-                        <div class="card-price-row">
-                            <span class="card-price">S/ ${prod.precio.toFixed(2)}</span>
-                            <span class="card-stock">✓ En stock</span>
-                        </div>
-                        <button class="btn-agregar-modern">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                            Agregar
-                        </button>
-                    </div>
-                </div>
-            `;
+            productosHtml += crearHTMLProducto(prod, 'categoria');
         });
 
         const html = `
