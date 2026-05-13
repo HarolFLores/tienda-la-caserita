@@ -2158,15 +2158,7 @@ body.editor-active .btn-delete-cat {
     gap: 20px;
 }
 
-/* Card moderna de producto de categoría */
-.producto-card-modern {
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    position: relative;
-}
+/* --- ESTILOS UNIFICADOS --- */
 
 .producto-card-modern:hover {
     transform: translateY(-8px);
