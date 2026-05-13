@@ -78,16 +78,8 @@ $(document).ready(function () {
             }
             statusText = prod.stock > 0 ? '⏰ Disponible hoy' : 'No disponible';
         } else {
-            // Productos normales: Solo mostrar agotado si el stock es exactamente 0
-            if (prod.stock === 0) {
-                etiquetaStock = `<div class="tag-limit" style="background:#6b7280">AGOTADO</div>`;
-                btnDisabled = 'disabled style="background:#ccc; cursor:not-allowed; color:#666;"';
-                textoBtn = 'Sin Stock';
-                statusText = 'Agotado';
-            } else {
-                // Por defecto "En stock" si no está definido o es > 0
-                statusText = '✓ En stock';
-            }
+            // Productos normales: Siempre disponibles por ahora
+            statusText = '✓ En stock';
         }
 
         // 2. Botón de Eliminar (Solo Admin)
