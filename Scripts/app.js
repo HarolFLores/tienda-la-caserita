@@ -68,8 +68,8 @@ $(document).ready(function () {
         
         // 1. Lógica de Stock Diferenciada
         if (source === 'sugerencia') {
-            // Sugerencias: Mostrar badge naranja si hay poco stock
-            if (prod.stock > 0 && prod.stock < 10) {
+            // Sugerencias: Mostrar badge siempre que haya stock disponible
+            if (prod.stock > 0) {
                 etiquetaStock = `<div class="tag-limit" style="background:#f59e0b">🔥 Solo ${prod.stock} unid.</div>`;
             } else if (prod.stock === 0) {
                 etiquetaStock = `<div class="tag-limit" style="background:#6b7280">AGOTADO</div>`;
