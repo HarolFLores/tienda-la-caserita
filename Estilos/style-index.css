@@ -675,19 +675,19 @@ a.header-logo:hover {
 
 /* --- Productos --- */
 .producto-card {
-    min-width: 200px;
-    max-width: 220px;
+    min-width: 170px;
+    max-width: 200px;
     background-color: #0d5f6e;
-    border-radius: 15px;
-    padding: 15px;
+    border-radius: 16px; /* Menos redondeado */
+    padding: 10px; /* Aún más compacto */
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     position: relative;
     flex-shrink: 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
     overflow: hidden;
 }
 
@@ -710,14 +710,13 @@ a.header-logo:hover {
 
 .producto-img {
     width: 100%;
-    height: 120px;
+    height: 105px; /* Reducido para compactar */
     background-color: #ffffff;
     border-radius: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
     overflow: hidden;
 }
 
@@ -730,32 +729,39 @@ a.header-logo:hover {
 
 .producto-titulo {
     color: white;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+    min-height: 2.3rem; /* Para alinear botones */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .producto-precio {
     color: #a5f3fc;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 2px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
 .producto-status {
     color: #d1fae5;
-    font-size: 0.75rem;
-    margin-bottom: 15px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    font-weight: 500;
 }
 
 .btn-agregar {
     background-color: white;
     color: #0d5f6e;
     border: none;
-    padding: 8px 20px;
-    border-radius: 20px;
+    padding: 8px 12px;
+    border-radius: 10px; /* Más cuadrado */
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     cursor: pointer;
     width: 100%;
     transition: background 0.2s;

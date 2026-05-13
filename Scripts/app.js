@@ -59,6 +59,61 @@ $(document).ready(function () {
         verificarModoEditor();        // Chequear si el switch estaba prendido
     }
 
+    // --- FUNCIÓN AUXILIAR PARA RENDERIZAR PRODUCTO (Unificado y Corregido) ---
+    function crearHTMLProducto(prod, source = 'categoria') {
+        let etiquetaStock = '';
+        let statusText = '';
+        let btnDisabled = '';
+        let textoBtn = 'Agregar al carrito';
+        
+        // 1. Lógica de Stock Diferenciada
+        if (source === 'sugerencia') {
+            // Sugerencias: Mostrar badge naranja si hay poco stock
+            if (prod.stock > 0 && prod.stock < 10) {
+                etiquetaStock = `<div class="tag-limit" style="background:#f59e0b">🔥 Solo ${prod.stock} unid.</div>`;
+            } else if (prod.stock === 0) {
+                etiquetaStock = `<div class="tag-limit" style="background:#6b7280">AGOTADO</div>`;
+                btnDisabled = 'disabled style="background:#ccc; cursor:not-allowed; color:#666;"';
+                textoBtn = 'Sin Stock';
+            }
+            statusText = prod.stock > 0 ? '⏰ Disponible hoy' : 'No disponible';
+        } else {
+            // Productos normales: Solo mostrar agotado si el stock es exactamente 0
+            if (prod.stock === 0) {
+                etiquetaStock = `<div class="tag-limit" style="background:#6b7280">AGOTADO</div>`;
+                btnDisabled = 'disabled style="background:#ccc; cursor:not-allowed; color:#666;"';
+                textoBtn = 'Sin Stock';
+                statusText = 'Agotado';
+            } else {
+                // Por defecto "En stock" si no está definido o es > 0
+                statusText = '✓ En stock';
+            }
+        }
+
+        // 2. Botón de Eliminar (Solo Admin)
+        let deleteBtn = '';
+        if (userRole === 'admin') {
+            deleteBtn = `<button class="btn-delete-item" onclick="handleDeleteClick(event, '${prod.id}', '${source}')" title="Eliminar" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center; font-size:12px;">🗑️</button>`;
+        }
+
+        // 3. Generar HTML (Estructura más compacta)
+        return `
+            <div class="producto-card ${source === 'sugerencia' ? 'sugerencia-card' : ''}" data-id="${prod.id}" data-tipo="${source}">
+                ${etiquetaStock}
+                ${deleteBtn}
+                <div class="producto-img">
+                    <img src="${prod.img}" onerror="this.src='Imagenes/producto-placeholder.png'" alt="${prod.titulo}">
+                </div>
+                <div class="producto-info">
+                    <h3 class="producto-titulo">${prod.titulo}</h3>
+                    <p class="producto-precio">S/ ${prod.precio.toFixed(2)}</p>
+                    <p class="producto-status">${statusText}</p>
+                    <button class="btn-agregar" ${btnDisabled}>${textoBtn}</button>
+                </div>
+            </div>
+        `;
+    }
+
     // ==========================================
     // MOMENTOS DEL DÍA - Renderizado dinámico
     // ==========================================
@@ -93,34 +148,7 @@ $(document).ready(function () {
 
             let productosHtml = '';
             productos.forEach(prod => {
-                let deleteBtn = '';
-                if (userRole === 'admin') {
-                    deleteBtn = `<button class="btn-delete-item" onclick="handleDeleteClick(event, '${prod.id}')" title="Eliminar" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center; font-size:14px;">🗑️</button>`;
-                }
-
-                productosHtml += `
-                    <div class="producto-card-modern" data-id="${prod.id}" data-tipo="categoria" style="position:relative;">
-                        ${deleteBtn}
-                        <div class="card-image">
-                            <img src="${prod.img}" onerror="this.src='Imagenes/producto-placeholder.png'" alt="${prod.titulo}">
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">${prod.titulo}</h3>
-                            <div class="card-price-row">
-                                <span class="card-price">S/ ${prod.precio.toFixed(2)}</span>
-                                <span class="card-stock">✓ En stock</span>
-                            </div>
-                            <button class="btn-agregar-modern">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="9" cy="21" r="1"></circle>
-                                    <circle cx="20" cy="21" r="1"></circle>
-                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                </svg>
-                                Agregar
-                            </button>
-                        </div>
-                    </div>
-                `;
+                productosHtml += crearHTMLProducto(prod, 'categoria');
             });
 
             const html = `
@@ -172,34 +200,7 @@ $(document).ready(function () {
         `);
 
         sugerenciasDB.forEach(prod => {
-            let colorStock = prod.stock < 3 ? '#ef4444' : '#f59e0b';
-            let etiquetaStock = prod.stock > 0
-                ? `<div class="tag-limit" style="background:${colorStock}">🔥 Solo ${prod.stock} unid.</div>`
-                : `<div class="tag-limit" style="background:#6b7280">AGOTADO</div>`;
-
-            let btnDisabled = prod.stock === 0 ? 'disabled style="background:#ccc; cursor:not-allowed"' : '';
-            let textoBtn = prod.stock === 0 ? 'Sin Stock' : 'Agregar al carrito';
-
-            // Botón eliminar solo para admin - indica que es de sugerencias
-            let deleteBtn = '';
-            if (userRole === 'admin') {
-                deleteBtn = `<button class="btn-delete-item" onclick="handleDeleteClick(event, '${prod.id}', 'sugerencia')" title="Quitar de Sugerencias" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center; font-size:14px;">🗑️</button>`;
-            }
-
-            const html = `
-                <div class="producto-card sugerencia-card" data-id="${prod.id}" data-tipo="sugerencia" style="position:relative;">
-                    ${etiquetaStock}
-                    ${deleteBtn}
-                    <div class="producto-img">
-                        <img src="${prod.img}" onerror="this.src='Imagenes/producto-placeholder.png'">
-                    </div>
-                    <h3 class="producto-titulo">${prod.titulo}</h3>
-                    <p class="producto-precio">S/ ${prod.precio.toFixed(2)}</p>
-                    <p class="producto-status">${prod.stock > 0 ? '⏰ Disponible hoy' : 'No disponible'}</p>
-                    <button class="btn-agregar" ${btnDisabled}>${textoBtn}</button>
-                </div>
-            `;
-            $grid.append(html);
+            $grid.append(crearHTMLProducto(prod, 'sugerencia'));
         });
     }
 
@@ -271,34 +272,7 @@ $(document).ready(function () {
 
         let productosHtml = '';
         productos.forEach(prod => {
-            let deleteBtn = '';
-            if (userRole === 'admin') {
-                deleteBtn = `<button class="btn-delete-item" onclick="handleDeleteClick(event, '${prod.id}')" title="Eliminar" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; z-index:2; display:flex; justify-content:center; align-items:center; font-size:14px;">🗑️</button>`;
-            }
-
-            productosHtml += `
-                <div class="producto-card-modern" data-id="${prod.id}" data-tipo="categoria" style="position:relative;">
-                    ${deleteBtn}
-                    <div class="card-image">
-                        <img src="${prod.img}" onerror="this.src='Imagenes/producto-placeholder.png'" alt="${prod.titulo}">
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${prod.titulo}</h3>
-                        <div class="card-price-row">
-                            <span class="card-price">S/ ${prod.precio.toFixed(2)}</span>
-                            <span class="card-stock">✓ En stock</span>
-                        </div>
-                        <button class="btn-agregar-modern">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                            Agregar
-                        </button>
-                    </div>
-                </div>
-            `;
+            productosHtml += crearHTMLProducto(prod, 'categoria');
         });
 
         const html = `
