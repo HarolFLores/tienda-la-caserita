@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="Imagenes/icono.png">
     <link rel="shortcut icon" href="Imagenes/icono.png">
     <link rel="apple-touch-icon" href="Imagenes/icono.png">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="Estilos/style_carrito.css">
     <link rel="stylesheet" href="Estilos/style-index.css">
 </head>
@@ -512,7 +512,7 @@
     <div class="modal-overlay" id="modalProducto">
         <div class="modal-content modal-wide">
             <div class="modal-header">
-                <h3>📦 Nuevo Producto</h3>
+                <h3><i class="fa-solid fa-box"></i> Nuevo Producto</h3>
                 <button class="btn-close-modal" onclick="cerrarModal('modalProducto')">×</button>
             </div>
             <form id="formNuevoProducto" class="form-grid">
@@ -561,7 +561,7 @@
                     <label>Momento del día</label>
                     <select id="prodMomento">
                         <option value="desayuno">Mañana Desayuno</option>
-                        <option value="almuerzo" selected>Almuerzo️ Almuerzo</option>
+                        <option value="almuerzo" selected>Almuerzo</option>
                         <option value="lonchera">Mochila Lonchera</option>
                         <option value="cena">Noche Cena</option>
                     </select>
@@ -575,7 +575,7 @@
                 <div class="form-group form-full toggle-group">
                     <div class="toggle-row">
                         <label class="toggle-label">
-                            <span class="toggle-icon">★</span>
+                            <span class="toggle-icon"><i class="fa-solid fa-star"></i></span>
                             Agregar a "Sugerencias del Día"
                         </label>
                         <label class="toggle-switch-container">
@@ -588,7 +588,7 @@
                 
                 <div class="modal-footer form-full">
                     <button type="button" class="btn-cancel" onclick="cerrarModal('modalProducto')">Cancelar</button>
-                    <button type="submit" class="btn-save">Guardar Guardar Producto</button>
+                    <button type="submit" class="btn-save">Guardar Producto</button>
                 </div>
             </form>
         </div>
@@ -628,7 +628,7 @@
     
     <div class="modal-overlay" id="deleteConfirmModal">
         <div class="modal-content" style="text-align: center; max-width: 380px;">
-            <div style="font-size: 50px; margin-bottom: 15px;">Eliminar</div>
+            <div style="font-size: 45px; color: #ef4444; margin-bottom: 15px;"><i class="fa-solid fa-trash-can"></i></div>
             <h3 id="deleteTitle" style="margin-bottom: 10px;">¿Eliminar producto?</h3>
             <p style="color: #666; margin-bottom: 25px;">Esta acción no se puede deshacer.</p>
             <div style="display: flex; gap: 15px; justify-content: center;">
@@ -641,7 +641,7 @@
     
     <div class="modal-overlay" id="alertModal">
         <div class="modal-content" style="text-align: center; max-width: 380px;">
-            <div id="alertIcon" style="font-size: 50px; margin-bottom: 15px;">Aviso</div>
+            <div id="alertIcon" style="font-size: 45px; color: #1a7a8a; margin-bottom: 15px;"><i class="fa-solid fa-circle-info"></i></div>
             <h3 id="alertTitle" style="margin-bottom: 10px;">Mensaje</h3>
             <p id="alertMessage" style="color: #666; margin-bottom: 25px;"></p>
         </div>
@@ -777,9 +777,9 @@
             <div class="footer-column">
                 <h3>Síguenos</h3>
                 <div class="social-links">
-                    <a href="#" class="social-icon">F</a>
-                    <a href="#" class="social-icon">I</a>
-                    <a href="#" class="social-icon">L</a>
+                    <a href="#" class="social-icon" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-icon" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>

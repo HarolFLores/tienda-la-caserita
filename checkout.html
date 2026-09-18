@@ -8,20 +8,21 @@
     <link rel="icon" type="image/png" href="Imagenes/icono.png">
     <link rel="shortcut icon" href="Imagenes/icono.png">
     <link rel="apple-touch-icon" href="Imagenes/icono.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="Estilos/style_checkout.css">
 </head>
 <body>
     <header class="checkout-header">
         <div class="header-content">
-            <a href="home.html" class="btn-back">←</a>
+            <a href="home.html" class="btn-back" title="Volver"><i class="fa-solid fa-arrow-left"></i></a>
             <h1 class="header-logo">Tienda "La Caserita"</h1>
             <div class="header-icons">
                 <div class="notification-wrapper">
-                    <button class="btn-icon" id="btnNotif">Alertas<span class="badge">1</span></button>
+                    <button class="btn-icon" id="btnNotif" title="Notificaciones"><i class="fa-solid fa-bell"></i><span class="badge">1</span></button>
                     <div class="notification-dropdown" id="notifDropdown">
                         <h4>Notificaciones</h4>
                         <div class="notif-item unread">
-                            <span class="notif-icon">Oferta</span>
+                            <span class="notif-icon"><i class="fa-solid fa-tag"></i></span>
                             <div class="notif-content">
                                 <p>¡Tienes un cupón de 10% de descuento!</p>
                                 <small>Hace 2 horas</small>
@@ -29,8 +30,8 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn-user">Cuenta Usuario</button>
-                <button class="btn-cart">Carrito Carrito (1)</button>
+                <button class="btn-user"><i class="fa-solid fa-user"></i> <span>Usuario</span></button>
+                <button class="btn-cart"><i class="fa-solid fa-cart-shopping"></i> <span>Carrito (1)</span></button>
             </div>
         </div>
     </header>
@@ -82,7 +83,7 @@
                 <div class="payment-option">
                     <input type="radio" name="payment" id="payment1" checked>
                     <label for="payment1">
-                        <span class="payment-icon">Efectivo</span>
+                        <span class="payment-icon"><i class="fa-solid fa-money-bill-wave"></i></span>
                         <span>Pago en efectivo</span>
                     </label>
                 </div>
@@ -90,7 +91,7 @@
                 <div class="payment-option">
                     <input type="radio" name="payment" id="payment2">
                     <label for="payment2">
-                        <span class="payment-icon">Yape</span>
+                        <span class="payment-icon"><i class="fa-solid fa-mobile-screen-button"></i></span>
                         <span>Yape</span>
                     </label>
                 </div>

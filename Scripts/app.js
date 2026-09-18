@@ -85,7 +85,7 @@ $(document).ready(function () {
         
         let deleteBtn = '';
         if (userRole === 'admin') {
-            deleteBtn = `<button class="btn-delete-item" onclick="handleDeleteClick(event, '${prod.id}', '${source}')" title="Eliminar" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center; font-size:12px;">Eliminar</button>`;
+            deleteBtn = `<button class="btn-delete-item" onclick="handleDeleteClick(event, '${prod.id}', '${source}')" title="Eliminar" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center; font-size:12px;"><i class="fa-solid fa-xmark"></i></button>`;
         }
 
         
@@ -106,9 +106,6 @@ $(document).ready(function () {
         `;
     }
 
-    
-    
-    
     const momentosConfig = {
         desayuno: [
             { subcat: 'avenas_cereales', nombre: 'Avenas y Cereales', icon: 'Café', color: 'linear-gradient(160deg, #eab308 0%, #ca8a04 100%)' },
@@ -210,7 +207,7 @@ $(document).ready(function () {
         categoriasDB.forEach(cat => {
             const html = `
                 <div class="categoria-wrapper">
-                    <button class="btn-delete-cat" onclick="eliminarCategoria('${cat.id}')" title="Eliminar categoría">Eliminar</button>
+                    <button class="btn-delete-cat" onclick="eliminarCategoria('${cat.id}')" title="Eliminar categoría"><i class="fa-solid fa-trash-can"></i></button>
                     <button class="categoria-card" data-categoria="${cat.id}">
                         <div class="categoria-icon">
                             <img src="${cat.img}" onerror="this.src='Imagenes/placeholder.png'">
@@ -636,10 +633,11 @@ $(document).ready(function () {
     window.showAlert = function (title, msg, type) {
         $('#alertTitle').text(title);
         $('#alertMessage').text(msg);
-        let icon = 'Aviso';
-        if (type === 'success') icon = '✓';
-        if (type === 'error') icon = '×';
-        $('#alertIcon').text(icon);
+        let icon = '<i class="fa-solid fa-circle-info" style="color: #1a7a8a;"></i>';
+        if (type === 'success') icon = '<i class="fa-solid fa-circle-check" style="color: #10b981;"></i>';
+        if (type === 'error') icon = '<i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i>';
+        if (type === 'warning') icon = '<i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i>';
+        $('#alertIcon').html(icon);
         abrirModal('alertModal');
     };
 
@@ -862,7 +860,7 @@ $(document).ready(function () {
                         </div>
                         <p class="item-price">S/ ${subtotal.toFixed(2)}</p>
                     </div>
-                    <button class="btn-remove-item" onclick="eliminarItem(${index})">Eliminar</button>
+                    <button class="btn-remove-item" onclick="eliminarItem(${index})" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             `);
         });

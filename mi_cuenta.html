@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="Imagenes/icono.png">
     <link rel="shortcut icon" href="Imagenes/icono.png">
     <link rel="apple-touch-icon" href="Imagenes/icono.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="Estilos/style_micuenta.css">
     <style>
         
@@ -174,7 +175,7 @@
     <header class="account-header">
         <div class="header-content">
             
-            <a href="home.html" class="btn-back" title="Volver a la tienda">←</a>
+            <a href="home.html" class="btn-back" title="Volver a la tienda"><i class="fa-solid fa-arrow-left"></i></a>
             <h1 class="header-title" style="flex-grow: 1;">Mi Cuenta</h1>
             <button class="btn-logout-header" id="btnLogoutHeader">Cerrar Sesión</button>
         </div>
@@ -184,7 +185,7 @@
         
         <section class="profile-card">
             <div class="profile-avatar">
-                <div class="avatar-circle">Cuenta</div>
+                <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
             </div>
             <div class="profile-info">
                 <h2 id="profileName">Cargando...</h2>
@@ -243,8 +244,7 @@
                 <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <h2>Información Personal</h2>
                     <button id="btnToggleEdit" class="btn-save-modal"
-                        style="width: auto; padding: 8px 15px; background: #1a7a8a; font-size: 0.9em;">Editar
-                        Editar</button>
+                        style="width: auto; padding: 8px 15px; background: #1a7a8a; font-size: 0.9em;"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
                 </div>
 
                 <div style="display: flex; justify-content: center; align-items: flex-start; margin-top: 20px;">
@@ -312,7 +312,7 @@
     
     <div class="modal-overlay" id="deleteConfirmModal" style="z-index: 2001;">
         <div class="custom-modal" style="text-align: center; max-width: 350px;">
-            <div style="font-size: 40px; margin-bottom: 10px;">Eliminar</div>
+            <div style="font-size: 40px; color: #ef4444; margin-bottom: 10px;"><i class="fa-solid fa-trash-can"></i></div>
             <h3>¿Eliminar dirección?</h3>
             <p style="color: #666; margin-bottom: 25px;">Esta acción no se puede deshacer.</p>
             <div style="display: flex; justify-content: space-between;">
@@ -325,7 +325,7 @@
     
     <div class="modal-overlay" id="alertModal" style="z-index: 2002;">
         <div class="custom-modal" style="text-align: center;">
-            <div id="alertIcon" style="font-size: 40px; margin-bottom: 10px;">Aviso</div>
+            <div id="alertIcon" style="font-size: 40px; margin-bottom: 10px; color: #1a7a8a;"><i class="fa-solid fa-circle-info"></i></div>
             <h3 id="alertTitle">Mensaje</h3>
             <p id="alertMessage" style="color: #666; margin-bottom: 20px;"></p>
             <button class="btn-save-modal" onclick="closeAlert()">Entendido</button>
@@ -589,10 +589,10 @@
                         <div class="address-header">
                             <h3>${addr.titulo}</h3>
                             <div class="address-actions">
-                                <button class="btn-edit-addr" style="background:none; border:none; cursor:pointer; font-size:1.2em; margin-right:5px;" 
+                                <button class="btn-edit-addr" style="background:none; border:none; cursor:pointer; font-size:1.1em; margin-right:5px; color:#1a7a8a;" 
                                     onclick="openEditModal('${addr._id}', '${tituloSafe}', '${ciudadSafe}', '${calleSafe}', '${refSafe}')" 
-                                    title="Editar">Editar</button>
-                                <button class="btn-delete" onclick="askDelete('${addr._id}')" title="Eliminar">Eliminar</button>
+                                    title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn-delete" style="background:none; border:none; cursor:pointer; font-size:1.1em; color:#ef4444;" onclick="askDelete('${addr._id}')" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
                         <p><strong>${addr.calle}</strong></p>
@@ -642,7 +642,11 @@
         function showAlert(title, msg, type) {
             $('#alertTitle').text(title);
             $('#alertMessage').text(msg);
-            $('#alertIcon').text(type === 'success' ? '✓' : (type === 'warning' ? 'Aviso' : '×'));
+            let iconHtml = '<i class="fa-solid fa-circle-info" style="color: #1a7a8a;"></i>';
+            if (type === 'success') iconHtml = '<i class="fa-solid fa-circle-check" style="color: #10b981;"></i>';
+            if (type === 'warning') iconHtml = '<i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i>';
+            if (type === 'error') iconHtml = '<i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i>';
+            $('#alertIcon').html(iconHtml);
             $('#alertModal').addClass('active');
         }
         function closeAlert() { $('#alertModal').removeClass('active'); }
