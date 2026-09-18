@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Checkout - Tienda La Caserita</title>
+    <link rel="icon" type="image/png" href="Imagenes/icono.png">
+    <link rel="shortcut icon" href="Imagenes/icono.png">
+    <link rel="apple-touch-icon" href="Imagenes/icono.png">
+    <link rel="stylesheet" href="Estilos/style_checkout.css">
+</head>
+<body>
+    <header class="checkout-header">
+        <div class="header-content">
+            <a href="home.html" class="btn-back">←</a>
+            <h1 class="header-logo">Tienda "La Caserita"</h1>
+            <div class="header-icons">
+                <div class="notification-wrapper">
+                    <button class="btn-icon" id="btnNotif">Alertas<span class="badge">1</span></button>
+                    <div class="notification-dropdown" id="notifDropdown">
+                        <h4>Notificaciones</h4>
+                        <div class="notif-item unread">
+                            <span class="notif-icon">Oferta</span>
+                            <div class="notif-content">
+                                <p>¡Tienes un cupón de 10% de descuento!</p>
+                                <small>Hace 2 horas</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-user">Cuenta Usuario</button>
+                <button class="btn-cart">Carrito Carrito (1)</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="checkout-container">
+        <div class="checkout-left">
+            <section class="checkout-section">
+                <div class="section-header">
+                    <h2>Dirección de entrega</h2>
+                    <button class="btn-change">Cambiar</button>
+                </div>
+                <div class="delivery-address">
+                    <p class="address-main">Cargando direcciones...</p>
+                    <p class="address-detail"></p>
+                </div>
+            </section>
+
+            <section class="checkout-section">
+                <h2>Método de entrega</h2>
+                
+                <div class="delivery-option selected">
+                    <input type="radio" name="delivery" id="delivery1" checked>
+                    <label for="delivery1">
+                        <div class="option-content">
+                            <h3>Delivery a domicilio</h3>
+                            <p>Recibe tu pedido en la puerta de tu casa</p>
+                            <p class="time-estimate">Tiempo estimado: 30-45 min</p>
+                            <p class="delivery-cost">Costo de envío: S/ 5.00</p> 
+                        </div>
+                    </label>
+                </div>
+
+                <div class="delivery-option">
+                    <input type="radio" name="delivery" id="delivery2">
+                    <label for="delivery2">
+                        <div class="option-content">
+                            <h3>Recojo en tienda</h3>
+                            <p>Recoge tu pedido en nuestra tienda</p>
+                            <p class="time-estimate">Tiempo estimado: 15-20 min</p>
+                            <button class="btn-gratis">GRATIS</button>
+                        </div>
+                    </label>
+                </div>
+            </section>
+
+            <section class="checkout-section">
+                <h2>Método de pago</h2>
+                
+                <div class="payment-option">
+                    <input type="radio" name="payment" id="payment1" checked>
+                    <label for="payment1">
+                        <span class="payment-icon">Efectivo</span>
+                        <span>Pago en efectivo</span>
+                    </label>
+                </div>
+
+                <div class="payment-option">
+                    <input type="radio" name="payment" id="payment2">
+                    <label for="payment2">
+                        <span class="payment-icon">Yape</span>
+                        <span>Yape</span>
+                    </label>
+                </div>
+            </section>
+        </div>
+
+        <aside class="checkout-right">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h2>Resumen</h2>
+                    <button class="btn-collapse">▲</button>
+                </div>
+
+                <div class="summary-content">
+                    <div class="summary-row">
+                        <span>Costo de productos</span>
+                        <span>S/21.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Costo de envío</span>
+                        <span>S/0.00</span>
+                    </div>
+
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>S/22.60</span>
+                    </div>
+
+                    <button class="btn-place-order" id="btnPlaceOrder">Hacer Pedido</button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    
+    <div id="addressModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mis Direcciones</h2>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="addressList">
+                <p>Cargando direcciones...</p>
+            </div>
+            <button id="btnOpenNewAddress" class="btn-place-order" style="margin-top: 15px; background: #10b981;">+ Nueva Dirección</button>
+        </div>
+    </div>
+
+    
+    <div id="newAddressModal" class="modal-overlay">
+        <div class="custom-modal">
+            <h3 style="margin-bottom: 20px; text-align: center; font-size: 1.3rem; color: #000;" id="modalTitle">Nueva Dirección</h3>
+            <form id="newAddressForm">
+                <div class="modal-form-group">
+                    <label>Título (Ej. Casa, Oficina)</label>
+                    <input type="text" id="newAddrTitle" required placeholder="Ej: Casa de Playa">
+                </div>
+                <div class="modal-form-group">
+                    <label>Ciudad</label>
+                    <input type="text" id="newAddrCity" required placeholder="Ej: Lima">
+                </div>
+                <div class="modal-form-group">
+                    <label>Dirección / Calle</label>
+                    <input type="text" id="newAddrStreet" required placeholder="Av. Principal 123">
+                </div>
+                <div class="modal-form-group">
+                    <label>Referencia (Opcional)</label>
+                    <input type="text" id="newAddrRef" placeholder="Frente al parque...">
+                </div>
+                <button type="submit" class="btn-save-modal">Guardar Dirección</button>
+                <button type="button" class="btn-cancel-modal btn-close-new-modal" style="display:block; text-align:center;">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    
+    <div id="toastNotification" class="toast">
+        <span id="toastIcon"></span>
+        <p id="toastMessage"></p>
+    </div>
+
+    <script src="Scripts/app.js"></script>
+
+    <script>
+        $(document).ready(async function() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const COSTO_DELIVERY = 5.00;
+            const token = localStorage.getItem('token');
+            let userAddresses = [];
+            let selectedAddress = null;
+
+            if (!token) {
+                alert("Debes iniciar sesión para realizar un pedido.");
+                window.location.href = 'index.html'; 
+                return;
+            }
+            
+            let subtotalProductos = carrito.reduce((total, producto) => total + (producto.precio * producto.cantidad), 0);
+
+            function showToast(message, type = 'success') {
+                const toast = $('#toastNotification');
+                toast.removeClass('success error warning').addClass(type);
+                
+                if (type === 'success') $('#toastIcon').text('✓');
+                else if (type === 'error') $('#toastIcon').text('×');
+                else $('#toastIcon').text('Aviso');
+                
+                $('#toastMessage').text(message);
+                toast.addClass('show');
+                
+                setTimeout(() => {
+                    toast.removeClass('show');
+                }, 4000);
+            }
+
+            actualizarResumen();
+            
+            $('#btnNotif').click(function(e) {
+                e.stopPropagation();
+                $('#notifDropdown').toggleClass('active');
+            });
+            $(document).click(function() {
+                $('#notifDropdown').removeClass('active');
+            });
+            $('#notifDropdown').click(function(e) {
+                e.stopPropagation();
+            });
+
+            await cargarUsuario();
+
+            async function cargarUsuario() {
+                try {
+                    const response = await fetch('https://tienda-caserita-api.onrender.com/api/auth/me', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (response.ok) {
+                        const user = await response.json();
+                        userAddresses = user.direcciones || [];
+                        if (userAddresses.length === 0) {
+                            $('.address-main').html('No tienes direcciones guardadas.');
+                            $('.address-detail').html('<a href="#" id="openNewAddressLink" style="color:#0d7a9e; font-weight:bold; text-decoration:none;">+ Agregar una dirección aquí</a>');
+                            $('.btn-change').hide(); 
+                            selectedAddress = null;
+                        } else {
+                            $('.btn-change').show();
+                            
+                            seleccionarDireccion(userAddresses[userAddresses.length - 1]);
+                        }
+                    } else {
+                        throw new Error('Error de respuesta del servidor');
+                    }
+                } catch (error) {
+                    console.error("Error cargando usuario:", error);
+                    $('.address-main').html('No pudimos cargar tus direcciones.');
+                    $('.address-detail').html('<a href="#" id="openNewAddressLink" style="color:#0d7a9e; font-weight:bold; text-decoration:none;">+ Agregar una dirección aquí</a>');
+                    $('.btn-change').hide();
+                    selectedAddress = null;
+                }
+            }
+
+            function seleccionarDireccion(direccion) {
+                selectedAddress = direccion;
+                $('.address-main').text(`${direccion.calle}, ${direccion.ciudad}`);
+                $('.address-detail').text(direccion.referencia ? `*${direccion.referencia}` : '');
+                $('#addressModal').removeClass('active');
+            }
+
+            
+            $('.btn-change').click(function() {
+                renderAddressList();
+                $('#addressModal').addClass('active');
+            });
+
+            $('.btn-close-modal').click(function() {
+                $('#addressModal').removeClass('active');
+            });
+
+            $('#addressModal').click(function(e) {
+                if (e.target.id === 'addressModal') {
+                    $('#addressModal').removeClass('active');
+                }
+            });
+
+            
+            $(document).on('click', '#openNewAddressLink, #btnOpenNewAddress', function(e) {
+                e.preventDefault();
+                $('#addressModal').removeClass('active');
+                $('#newAddressModal').addClass('active');
+            });
+
+            $('.btn-close-new-modal').click(function() {
+                $('#newAddressModal').removeClass('active');
+            });
+
+            $('#newAddressForm').submit(async function(e) {
+                e.preventDefault();
+                const btn = $(this).find('button[type="submit"]');
+                btn.text('Guardando...').prop('disabled', true);
+                
+                const data = {
+                    titulo: $('#newAddrTitle').val(),
+                    ciudad: $('#newAddrCity').val(),
+                    calle: $('#newAddrStreet').val(),
+                    referencia: $('#newAddrRef').val()
+                };
+
+                try {
+                    const res = await fetch('https://tienda-caserita-api.onrender.com/api/auth/address', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if(res.ok) {
+                        showToast('Dirección agregada con éxito', 'success');
+                        $('#newAddressModal').removeClass('active');
+                        $('#newAddressForm')[0].reset();
+                        await cargarUsuario(); 
+                    } else {
+                        showToast('Error al guardar la dirección', 'error');
+                    }
+                } catch(error) {
+                    showToast('Error de conexión', 'error');
+                } finally {
+                    btn.text('Guardar Dirección').prop('disabled', false);
+                }
+            });
+
+            function renderAddressList() {
+                const $list = $('#addressList');
+                $list.empty();
+                if (userAddresses.length === 0) {
+                    $list.append('<p>No tienes direcciones guardadas. Ve a tu perfil para agregarlas.</p>');
+                    return;
+                }
+                userAddresses.forEach((dir, index) => {
+                    const isSelected = selectedAddress && selectedAddress._id === dir._id;
+                    const item = $(`
+                        <div class="address-item ${isSelected ? 'selected' : ''}" data-index="${index}">
+                            <strong>${dir.titulo}</strong>
+                            <p>${dir.calle}, ${dir.ciudad}</p>
+                            ${dir.referencia ? `<small>${dir.referencia}</small>` : ''}
+                        </div>
+                    `);
+                    item.click(function() {
+                        seleccionarDireccion(userAddresses[$(this).data('index')]);
+                    });
+                    $list.append(item);
+                });
+            }
+
+            $('input[name="delivery"]').change(function() {
+                $('.delivery-option').removeClass('selected');
+                $(this).closest('.delivery-option').addClass('selected');
+                actualizarResumen();    
+            });
+
+            $('input[name="payment"]').change(function() {
+                $('.payment-option').removeClass('highlighted');
+                if ($(this).attr('id') === 'payment2') {
+                    $(this).closest('.payment-option').addClass('highlighted');
+                }
+            });
+
+            $('.btn-collapse').click(function() {
+                $('.summary-content').slideToggle(300);
+                $(this).toggleClass('collapsed');
+                $(this).text($(this).hasClass('collapsed') ? '▼' : '▲');
+            });
+
+            $('#btnPlaceOrder').click(async function() {
+                if(carrito.length === 0) {
+                    showToast("Tu carrito está vacío", "warning");
+                    return;
+                }
+                if ($('#delivery1').is(':checked') && !selectedAddress) {
+                    showToast("Por favor selecciona una dirección de entrega válida.", "warning");
+                    return;
+                }
+
+                
+                const $btn = $(this);
+                $btn.prop('disabled', true).text('Procesando...');
+
+                try {
+                    let costoEnvioActual = $('#delivery1').is(':checked') ? COSTO_DELIVERY : 0;
+                    let totalPagar = subtotalProductos + costoEnvioActual;
+                    
+                    const metodoPago = $('#payment2').closest('.payment-option').hasClass('highlighted') ? 'Yape' : 'Efectivo';
+                    const direccionStr = $('#delivery1').is(':checked') ? `${selectedAddress.calle}, ${selectedAddress.ciudad}` : 'Recojo en tienda';
+
+                    
+                    const productosPedido = carrito.map(p => ({
+                        productoId: p.id,
+                        titulo: p.titulo,
+                        cantidad: p.cantidad,
+                        precioUnitario: p.precio,
+                        subtotal: p.precio * p.cantidad
+                    }));
+
+                    const payload = {
+                        productos: productosPedido,
+                        total: totalPagar,
+                        metodoPago: metodoPago,
+                        direccionEnvio: direccionStr
+                    };
+
+                    const response = await fetch('https://tienda-caserita-api.onrender.com/api/pedidos', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        showToast('¡Pedido realizado con éxito! Redirigiendo...', 'success');
+                        localStorage.removeItem('carrito');
+                        setTimeout(() => {
+                            window.location.href = 'mi_cuenta.html';
+                        }, 2000);
+                    } else {
+                        const data = await response.json();
+                        showToast('Error al procesar: ' + (data.error || 'Intenta de nuevo'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Error al enviar pedido:', error);
+                    showToast('Error de conexión al procesar el pedido.', 'error');
+                } finally {
+                    $btn.prop('disabled', false).text('Hacer Pedido');
+                }
+            });
+
+            function actualizarResumen() {
+                let costoEnvioActual = 0;
+
+                if ($('#delivery1').is(':checked')) {
+                    costoEnvioActual = COSTO_DELIVERY; 
+                } else {
+                    costoEnvioActual = 0.00;
+                }
+
+                let totalPagar = subtotalProductos + costoEnvioActual;
+
+                $('.summary-row:eq(0) span:last-child').text('S/ ' + subtotalProductos.toFixed(2));
+                $('.summary-row:eq(1) span:last-child').text('S/ ' + costoEnvioActual.toFixed(2));
+                $('.summary-total span:last-child').text('S/ ' + totalPagar.toFixed(2));
+            }
+        });
+    </script>
+</body>
+</html>
