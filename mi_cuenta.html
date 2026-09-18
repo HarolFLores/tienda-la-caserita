@@ -262,11 +262,17 @@
                             <h3 class="info-header" style="margin-top: 25px;">Seguridad</h3>
                             <div class="modal-form-group">
                                 <label>Contraseña Actual (Requerida solo para guardar cambios)</label>
-                                <input type="password" id="currentPassword" placeholder="Tu contraseña actual">
+                                <div style="position: relative;">
+                                    <input type="password" id="currentPassword" placeholder="Tu contraseña actual" style="padding-right: 40px;">
+                                    <button type="button" onclick="togglePass('currentPassword', this)" title="Mostrar u ocultar contraseña" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #888; font-size: 16px;"><i class="fa-solid fa-eye"></i></button>
+                                </div>
                             </div>
                             <div class="modal-form-group">
                                 <label>Nueva Contraseña (Opcional)</label>
-                                <input type="password" id="newPassword" placeholder="Nueva contraseña">
+                                <div style="position: relative;">
+                                    <input type="password" id="newPassword" placeholder="Nueva contraseña" style="padding-right: 40px;">
+                                    <button type="button" onclick="togglePass('newPassword', this)" title="Mostrar u ocultar contraseña" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #888; font-size: 16px;"><i class="fa-solid fa-eye"></i></button>
+                                </div>
                             </div>
                         </div>
 
@@ -649,6 +655,15 @@
             $('#alertIcon').html(iconHtml);
             $('#alertModal').addClass('active');
         }
+        function togglePass(id, btn) {
+            const $input = $('#' + id);
+            const isPassword = $input.attr('type') === 'password';
+            $input.attr('type', isPassword ? 'text' : 'password');
+            if (btn) {
+                $(btn).html(isPassword ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>');
+            }
+        }
+
         function closeAlert() { $('#alertModal').removeClass('active'); }
     </script>
 </body>
