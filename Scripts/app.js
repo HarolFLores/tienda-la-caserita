@@ -108,20 +108,20 @@ $(document).ready(function () {
 
     const momentosConfig = {
         desayuno: [
-            { subcat: 'avenas_cereales', nombre: 'Avenas y Cereales', icon: 'Café', color: 'linear-gradient(160deg, #eab308 0%, #ca8a04 100%)' },
-            { subcat: 'panaderia_untables', nombre: 'Panadería y Untables', icon: 'Pan', color: 'linear-gradient(160deg, #3b82f6 0%, #1d4ed8 100%)' }
+            { subcat: 'avenas_cereales', nombre: 'Avenas y Cereales', icon: '☕', color: 'linear-gradient(160deg, #eab308 0%, #ca8a04 100%)' },
+            { subcat: 'panaderia_untables', nombre: 'Panadería y Untables', icon: '🍞', color: 'linear-gradient(160deg, #3b82f6 0%, #1d4ed8 100%)' }
         ],
         almuerzo: [
-            { subcat: 'carnes_aves', nombre: 'Carnes y Aves', icon: 'Carnes', color: 'linear-gradient(160deg, #ef4444 0%, #b91c1c 100%)' },
-            { subcat: 'verduras_frescas', nombre: 'Verduras Frescas', icon: 'Verduras', color: 'linear-gradient(160deg, #22c55e 0%, #15803d 100%)' },
-            { subcat: 'abarrotes_almuerzo', nombre: 'Abarrotes', icon: 'Carrito', color: 'linear-gradient(160deg, #0d5f6e 0%, #176e76 100%)' },
-            { subcat: 'bebidas_almuerzo', nombre: 'Bebidas', icon: 'Bebidas', color: 'linear-gradient(160deg, #06b6d4 0%, #0891b2 100%)' }
+            { subcat: 'carnes_aves', nombre: 'Carnes y Aves', icon: '🥩', color: 'linear-gradient(160deg, #ef4444 0%, #b91c1c 100%)' },
+            { subcat: 'verduras_frescas', nombre: 'Verduras Frescas', icon: '🥦', color: 'linear-gradient(160deg, #22c55e 0%, #15803d 100%)' },
+            { subcat: 'abarrotes_almuerzo', nombre: 'Abarrotes', icon: '🛒', color: 'linear-gradient(160deg, #0d5f6e 0%, #176e76 100%)' },
+            { subcat: 'bebidas_almuerzo', nombre: 'Bebidas', icon: '🥤', color: 'linear-gradient(160deg, #06b6d4 0%, #0891b2 100%)' }
         ],
         lonchera: [
-            { subcat: 'jugos_galletas', nombre: 'Jugos y Galletas', icon: 'Bebidas', color: 'linear-gradient(160deg, #f97316 0%, #c2410c 100%)' }
+            { subcat: 'jugos_galletas', nombre: 'Jugos y Galletas', icon: '🧃', color: 'linear-gradient(160deg, #f97316 0%, #c2410c 100%)' }
         ],
         cena: [
-            { subcat: 'infusiones_ligeros', nombre: 'Infusiones y Ligeros', icon: 'Infusión', color: 'linear-gradient(160deg, #8b5cf6 0%, #6d28d9 100%)' }
+            { subcat: 'infusiones_ligeros', nombre: 'Infusiones y Ligeros', icon: '🫖', color: 'linear-gradient(160deg, #8b5cf6 0%, #6d28d9 100%)' }
         ]
     };
 
