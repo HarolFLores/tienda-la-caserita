@@ -19,3 +19,4 @@ router.get('/orders', verificarToken, authController.getMyOrders);
 router.put('/update-profile', verificarToken, authController.updateProfile);
 
 module.exports = router;
+

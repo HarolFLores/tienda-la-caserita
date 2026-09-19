@@ -6,3 +6,4 @@ router.post('/', verificarToken, pedidoController.createPedido);
 router.get('/', verificarToken, pedidoController.getMisPedidos);
 
 module.exports = router;
+

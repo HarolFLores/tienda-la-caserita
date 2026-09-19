@@ -124,3 +124,4 @@ app.post('/api/productos', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Inicio Servidor backend escuchando en http://localhost:${PORT}`);
 });
+
